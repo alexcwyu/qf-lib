@@ -1,0 +1,130 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "qf-lib"
+dynamic = ["version"]
+description = "Quantitative Finance Library"
+readme = "README.md"
+requires-python = "==3.13.*"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Jacek Witkowski"},
+    {name = "Marcin Borratynski"},
+    {name = "Thomas Ruxton"},
+    {name = "Dominik Picheta"},
+    {name = "Olga Kalinowska"},
+    {name = "Karolina Cynk"},
+    {name = "Jakub Czerski"},
+    {name = "Bartlomiej Czajewski"},
+    {name = "Zeynep Gültuğ Aydemir"},
+    {name = "Octavian-Mihai Matei"},
+    {name = "Eirik Thorp Eythorsson"},
+    {name = "Marek Bais"},
+]
+keywords = ["quantitative", "finance", "backtester", "trading", "algorithmic-trading"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.13",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "License :: OSI Approved :: Apache Software License",
+]
+dependencies = [
+    "pandas>=2.3.3",
+    "xarray>=2025.1.2",
+    "numpy>=2.3.4",
+    "matplotlib>=3.10.7",
+    "Pillow>=12.0.0",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "openpyxl>=3.1.5",
+    "WeasyPrint>=63.1",
+    "Jinja2>=3.1.6",
+]
+
+[project.optional-dependencies]
+documentation = [
+    "autodocsumm>=0.2.14",
+    "sphinx-rtd-theme>=3.0.2",
+    "Sphinx>=8.1.3",
+    "docutils>=0.21.2",
+    "markupsafe>=3.0.3",
+]
+interactive_brokers = [
+    "ibapi>=9.81.1",
+]
+bloomberg_beap_hapi = [
+    "PyJWT>=2.10.1",
+    "retrying>=1.3.4",
+    # "beap-lib>=0.0.1",  # Not available in PyPI - install manually if needed
+    "requests>=2.32.5",
+]
+blpapi = [
+    # "blpapi>=3.24.4",  # Not available in PyPI - install manually from Bloomberg if needed
+]
+quandl = [
+    "quandl>=3.7.0",
+]
+yfinance = [
+    "yfinance>=0.2.55",
+]
+detailed_analysis = [
+    "statsmodels>=0.14.5",
+    "scipy>=1.16.3",
+    "cvxopt>=1.3.2",
+    "arch>=7.2.0",
+]
+alpaca = [
+    "alpaca-py>=0.37.0",
+]
+dev = [
+    "pytest>=9.0.1",
+    "pytest-cov>=6.0.0",
+    "black>=25.11.0",
+    "flake8>=7.1.1",
+]
+
+[project.urls]
+Homepage = "https://quarkfin.github.io/qf-lib-info"
+Documentation = "https://qf-lib.readthedocs.io"
+Repository = "https://github.com/quarkfin/qf-lib"
+"Bug Tracker" = "https://github.com/quarkfin/qf-lib/issues"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "qf_lib/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["qf_lib"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "qf_lib/**",
+    "demo_scripts/**",
+    "input/**",
+    "README.md",
+    "LICENSE",
+]
+exclude = [
+    "qf_lib/tests/**",
+    "docs/**",
+    ".git*",
+]
+
+[tool.black]
+line-length = 120
+target-version = ["py313"]
+
+[tool.pytest.ini_options]
+testpaths = ["qf_lib/tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+

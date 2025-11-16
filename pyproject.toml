@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
@@ -96,10 +96,10 @@ Repository = "https://github.com/quarkfin/qf-lib"
 "Bug Tracker" = "https://github.com/quarkfin/qf-lib/issues"
 
 [tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.build.hooks.vcs]
-version-file = "qf_lib/_version.py"
+# Use regex to extract version from _version.py file
+# This avoids issues with VCS detection in nested git repositories
+path = "qf_lib/_version.py"
+pattern = "__version__ = version = '(?P<version>[^']+)'"
 
 [tool.hatch.build.targets.wheel]
 packages = ["qf_lib"]

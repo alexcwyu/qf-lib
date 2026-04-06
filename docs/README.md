@@ -1,5 +1,8 @@
 # QF-Lib
 
+> **Last Updated**: 2026-04-06T16:25:30Z  \
+> **Git Hash**: `ba69a25`
+
 Quantitative Finance Library developed at CERN (European Organization for Nuclear Research). A comprehensive Python framework for backtesting trading strategies, portfolio construction, data management, and quantitative analysis.
 
 ## Overview

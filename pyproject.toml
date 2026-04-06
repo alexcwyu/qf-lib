@@ -82,12 +82,16 @@ detailed_analysis = [
 alpaca = [
     "alpaca-py>=0.37.0",
 ]
+[dependency-groups]
 dev = [
-    "pytest>=9.0.1",
+    "pytest>=9.0",
     "pytest-cov>=6.0.0",
-    "black>=25.11.0",
-    "flake8>=7.1.1",
+    "ruff>=0.11.0",
+    "pyright>=1.1.400",
 ]
+
+[tool.uv]
+default-groups = ["dev"]
 
 [project.urls]
 Homepage = "https://quarkfin.github.io/qf-lib-info"
@@ -98,32 +102,52 @@ Repository = "https://github.com/quarkfin/qf-lib"
 [tool.hatch.version]
 # Use regex to extract version from _version.py file
 # This avoids issues with VCS detection in nested git repositories
-path = "qf_lib/_version.py"
+path = "src/qf_lib/_version.py"
 pattern = "__version__ = version = '(?P<version>[^']+)'"
 
 [tool.hatch.build.targets.wheel]
-packages = ["qf_lib"]
+packages = ["src/qf_lib"]
 
 [tool.hatch.build.targets.sdist]
 include = [
-    "qf_lib/**",
+    "src/qf_lib/**",
     "demo_scripts/**",
     "input/**",
     "README.md",
     "LICENSE",
 ]
 exclude = [
-    "qf_lib/tests/**",
+    "src/qf_lib/tests/**",
     "docs/**",
     ".git*",
 ]
 
-[tool.black]
-line-length = 120
-target-version = ["py313"]
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "C4", "RUF", "PERF", "TC", "PTH"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["qf_lib"]
+
+[tool.pyright]
+pythonVersion = "3.13"
+typeCheckingMode = "basic"
 
 [tool.pytest.ini_options]
-testpaths = ["qf_lib/tests"]
+minversion = "9.0"
+addopts = ["-ra", "-q", "--strict-markers", "--import-mode=importlib"]
+testpaths = ["src/qf_lib/tests"]
+pythonpath = ["src"]
+xfail_strict = true
+filterwarnings = ["error"]
 python_files = "test_*.py"
 python_classes = "Test*"
 python_functions = "test_*"

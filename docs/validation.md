@@ -155,44 +155,44 @@ Unsuccessful rows are retained as historical compatibility attempts; they are no
 
 | Command | Exit | Seconds | Evidence |
 |---|---:|---:|---|
-| `uv lock --upgrade --python 3.15` | 0 | 1.15 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-3.15.log) |
-| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.05 | [log](../../docs/maintenance-2026-10-12/qf-lib-wheel-probe-3.15.log) |
-| `uv lock --upgrade --python 3.14` | 0 | 1.29 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.04 | [log](../../docs/maintenance-2026-10-12/qf-lib-wheel-probe-3.14.log) |
-| `uv sync --all-extras --all-groups --python 3.14` | 0 | 3.49 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-3.14.log) |
-| `uv build --python 3.14` | 0 | 7.27 | [log](../../docs/maintenance-2026-10-12/qf-lib-build.log) |
-| `/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src` | 0 | 0.72 | [log](../../docs/maintenance-2026-10-12/qf-lib-compile.log) |
-| `uv run --no-sync python -m pytest` | 2 | 12.72 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests.log) |
-| `uv run --no-sync python -m pytest` | 2 | 7.35 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-numpy-public-api.log) |
-| `uv lock --upgrade --python 3.14` | 0 | 2.89 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-bloomberg-sdk.log) |
-| `uv sync --all-extras --all-groups --python 3.14` | 0 | 1.46 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-bloomberg-sdk.log) |
-| `uv run --no-sync python -m pytest` | 2 | 12.17 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-bloomberg-sdk.log) |
-| `uv sync --all-extras --all-groups --python 3.14 --compile-bytecode` | 0 | 2.65 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-bloomberg-bytecode.log) |
-| `uv run --no-sync python -m pytest` | 2 | 6.04 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-bloomberg-bytecode.log) |
-| `brew install pango` | 0 | 9.05 | [log](../../docs/maintenance-2026-10-12/qf-lib-native-pango.log) |
-| `uv lock --upgrade --python 3.14` | 0 | 1.09 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-alpaca-legacy-websockets.log) |
-| `uv sync --all-extras --all-groups --python 3.14 --compile-bytecode` | 0 | 0.97 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-alpaca-legacy-websockets.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest` | 2 | 5.18 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-native-rendering-sdk.log) |
-| `uv run --no-sync python -m compileall -q src` | 0 | 0.5 | [log](../../docs/maintenance-2026-10-12/qf-lib-compile-final.log) |
-| `uv build --python 3.14` | 0 | 6.0 | [log](../../docs/maintenance-2026-10-12/qf-lib-build-final.log) |
-| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.18 | [log](../../docs/maintenance-2026-10-12/qf-lib-versions-final.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest` | 1 | 807.1 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-docstring-native-sdk.log) |
-| `uv lock --upgrade --python 3.15` | 0 | 3.18 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-python315-source-supported.log) |
-| `env CVXOPT_SUITESPARSE_INC_DIR=/opt/homebrew/include/suitesparse CVXOPT_SUITESPARSE_LIB_DIR=/opt/homebrew/lib uv sync --all-extras --all-groups --python 3.15 --compile-bytecode` | 0 | 8.15 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-python315-source-supported.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest src/qf_lib/tests/unit_tests` | 1 | 33.9 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-unit-current-scientific-apis.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/unit_tests -q` | 1 | 25.1 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-unit-pandas-api-fixes.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v` | 1 | 601.91 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-python315-full-current-apis.log) |
-| `uv lock --upgrade` | 0 | 3.26 | [log](../../docs/maintenance-2026-10-12/qf-lib-lock-yfinance-worker-cleanup.log) |
-| `uv sync --frozen --all-extras --all-groups --compile-bytecode` | 0 | 0.98 | [log](../../docs/maintenance-2026-10-12/qf-lib-sync-yfinance-worker-cleanup.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/integration_tests/data_providers/yfinance_data_provider/test_yfinance_data_provider.py src/qf_lib/tests/unit_tests/backtesting/alpha_model/test_alpha_model.py -v` | 0 | 3.45 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-yfinance-owner-thread-cleanup.log) |
-| `uv build` | 0 | 3.29 | [log](../../docs/maintenance-2026-10-12/qf-lib-build-python315-yfinance-final.log) |
-| `uv run --frozen --all-extras --all-groups python -m compileall -q src vendor` | 0 | 0.73 | [log](../../docs/maintenance-2026-10-12/qf-lib-compile-python315-yfinance-final.log) |
-| `uv run --frozen --all-extras --all-groups python -c import sys, importlib.metadata as m; print(sys.version); print('\n'.join(sorted(d.metadata['Name']+'=='+d.version for d in m.distributions())))` | 0 | 0.24 | [log](../../docs/maintenance-2026-10-12/qf-lib-versions-final.log) |
-| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v` | 0 | 623.97 | [log](../../docs/maintenance-2026-10-12/qf-lib-tests-python315-full-final-cleanup.log) |
-| `brew list --versions pango glib suite-sparse` | 0 | 0.93 | [log](../../docs/maintenance-2026-10-12/qf-lib-native-versions-final.log) |
-| `uv run --frozen --all-extras --all-groups python /tmp/qf-artifact-verify.py` | 0 | 0.29 | [log](../../docs/maintenance-2026-10-12/qf-lib-artifact-content-final.log) |
+| `uv lock --upgrade --python 3.15` | 0 | 1.15 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project` | 2 | 0.05 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.14` | 0 | 1.29 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project` | 2 | 0.04 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14` | 0 | 3.49 | [check record](maintenance/index.html) |
+| `uv build --python 3.14` | 0 | 7.27 | [check record](maintenance/index.html) |
+| `/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src` | 0 | 0.72 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 12.72 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 7.35 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.14` | 0 | 2.89 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14` | 0 | 1.46 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 12.17 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14 --compile-bytecode` | 0 | 2.65 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m pytest` | 2 | 6.04 | [check record](maintenance/index.html) |
+| `brew install pango` | 0 | 9.05 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.14` | 0 | 1.09 | [check record](maintenance/index.html) |
+| `uv sync --all-extras --all-groups --python 3.14 --compile-bytecode` | 0 | 0.97 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest` | 2 | 5.18 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -m compileall -q src` | 0 | 0.5 | [check record](maintenance/index.html) |
+| `uv build --python 3.14` | 0 | 6.0 | [check record](maintenance/index.html) |
+| `uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))` | 0 | 0.18 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest` | 1 | 807.1 | [check record](maintenance/index.html) |
+| `uv lock --upgrade --python 3.15` | 0 | 3.18 | [check record](maintenance/index.html) |
+| `env CVXOPT_SUITESPARSE_INC_DIR=/opt/homebrew/include/suitesparse CVXOPT_SUITESPARSE_LIB_DIR=/opt/homebrew/lib uv sync --all-extras --all-groups --python 3.15 --compile-bytecode` | 0 | 8.15 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest src/qf_lib/tests/unit_tests` | 1 | 33.9 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/unit_tests -q` | 1 | 25.1 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v` | 1 | 601.91 | [check record](maintenance/index.html) |
+| `uv lock --upgrade` | 0 | 3.26 | [check record](maintenance/index.html) |
+| `uv sync --frozen --all-extras --all-groups --compile-bytecode` | 0 | 0.98 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/integration_tests/data_providers/yfinance_data_provider/test_yfinance_data_provider.py src/qf_lib/tests/unit_tests/backtesting/alpha_model/test_alpha_model.py -v` | 0 | 3.45 | [check record](maintenance/index.html) |
+| `uv build` | 0 | 3.29 | [check record](maintenance/index.html) |
+| `uv run --frozen --all-extras --all-groups python -m compileall -q src vendor` | 0 | 0.73 | [check record](maintenance/index.html) |
+| `uv run --frozen --all-extras --all-groups python -c import sys, importlib.metadata as m; print(sys.version); print('\n'.join(sorted(d.metadata['Name']+'=='+d.version for d in m.distributions())))` | 0 | 0.24 | [check record](maintenance/index.html) |
+| `env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v` | 0 | 623.97 | [check record](maintenance/index.html) |
+| `brew list --versions pango glib suite-sparse` | 0 | 0.93 | [check record](maintenance/index.html) |
+| `uv run --frozen --all-extras --all-groups python /tmp/qf-artifact-verify.py` | 0 | 0.29 | [check record](maintenance/index.html) |
 
-The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [result](../../docs/maintenance-2026-10-12/qf-lib-result.json) includes branch/default ancestry, status, artifacts and unresolved checks.
+The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable [verification record](maintenance/verification.json) includes branch/default ancestry, status, artifacts and unresolved checks.
 
 ## Dependency floor refresh
 

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>qf-lib: portable verification records</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+main{min-width:0;overflow-wrap:anywhere}table,pre{max-width:100%}.diagram svg{display:block}
+th,td{min-width:120px;overflow-wrap:normal}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="index.md">Markdown source</a></header><main><h1 id="qf-lib-portable-verification-records">qf-lib: portable verification records<a class="headerlink" href="#qf-lib-portable-verification-records" title="Permanent link">&para;</a></h1>
+<p>Full raw logs are retained in the workspace maintenance evidence, not distributed here. Hashes identify those original logs. A successful build or selected test subset does not imply a full test-suite pass. Commands containing <workspace> describe the original execution environment.</p>
+<p><a href="verification.json">Machine-readable records</a> · <a href="../validation.md">Repository validation summary</a></p>
+<h2 id="executed-commands">Executed commands<a class="headerlink" href="#executed-commands" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th style="text-align: right;">Exit</th>
+<th style="text-align: right;">Duration</th>
+<th>Command</th>
+<th>Outcomes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>artifact-content-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.29s</td>
+<td><code>uv run --frozen --all-extras --all-groups python /tmp/qf-artifact-verify.py</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>build</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.27s</td>
+<td><code>uv build --python 3.14</code></td>
+<td>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115.tar.gz<br>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115-py3-none-any.whl</td>
+</tr>
+<tr>
+<td>build-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6.0s</td>
+<td><code>uv build --python 3.14</code></td>
+<td>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115.tar.gz<br>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115-py3-none-any.whl</td>
+</tr>
+<tr>
+<td>build-python315-yfinance-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.29s</td>
+<td><code>uv build</code></td>
+<td>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115.tar.gz<br>Successfully built dist/qf_lib-4.0.5.dev4+g6807f62f9.d20251115-py3-none-any.whl</td>
+</tr>
+<tr>
+<td>compile</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.72s</td>
+<td><code>/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>compile-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5s</td>
+<td><code>uv run --no-sync python -m compileall -q src</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>compile-python315-yfinance-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.73s</td>
+<td><code>uv run --frozen --all-extras --all-groups python -m compileall -q src vendor</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-3.14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.29s</td>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-3.15</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.15s</td>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-alpaca-legacy-websockets</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.09s</td>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-bloomberg-sdk</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.89s</td>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-python315-source-supported</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.18s</td>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>lock-yfinance-worker-cleanup</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.26s</td>
+<td><code>uv lock --upgrade</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>native-pango</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9.05s</td>
+<td><code>brew install pango</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>native-versions-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.93s</td>
+<td><code>brew list --versions pango glib suite-sparse</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-3.14</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.49s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.14</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-alpaca-legacy-websockets</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.97s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --compile-bytecode</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-bloomberg-bytecode</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.65s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --compile-bytecode</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-bloomberg-sdk</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.46s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.14</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-python315-source-supported</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8.15s</td>
+<td><code>env CVXOPT_SUITESPARSE_INC_DIR=/opt/homebrew/include/suitesparse CVXOPT_SUITESPARSE_LIB_DIR=/opt/homebrew/lib uv sync --all-extras --all-groups --python 3.15 --compile-bytecode</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>sync-yfinance-worker-cleanup</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.98s</td>
+<td><code>uv sync --frozen --all-extras --all-groups --compile-bytecode</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.72s</td>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-bloomberg-bytecode</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6.04s</td>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-bloomberg-sdk</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.17s</td>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-docstring-native-sdk</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">807.1s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest</code></td>
+<td>73 failed, 780 passed, 109 skipped, 23 errors, 29 subtests passed in 804.28s (0:13:24)</td>
+</tr>
+<tr>
+<td>tests-native-rendering-sdk</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5.18s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-numpy-public-api</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7.35s</td>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-python315-full-current-apis</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">601.91s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v</code></td>
+<td>============ 2 failed, 874 passed, 109 skipped in 600.65s (0:10:00) ============</td>
+</tr>
+<tr>
+<td>tests-python315-full-final-cleanup</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">623.97s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v</code></td>
+<td>================= 876 passed, 109 skipped in 622.82s (0:10:22) =================</td>
+</tr>
+<tr>
+<td>tests-unit-current-scientific-apis</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">33.9s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest src/qf_lib/tests/unit_tests</code></td>
+<td>21 failed, 788 passed, 23 errors, 14 subtests passed in 32.69s</td>
+</tr>
+<tr>
+<td>tests-unit-pandas-api-fixes</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">25.1s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/unit_tests -q</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>tests-yfinance-owner-thread-cleanup</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.45s</td>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/integration_tests/data_providers/yfinance_data_provider/test_yfinance_data_provider.py src/qf_lib/tests/unit_tests/backtesting/alpha_model/test_alpha_model.py -v</code></td>
+<td>============================== 25 passed in 2.78s ==============================</td>
+</tr>
+<tr>
+<td>versions-final</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.24s</td>
+<td><code>uv run --frozen --all-extras --all-groups python -c import sys, importlib.metadata as m; print(sys.version); print('\n'.join(sorted(d.metadata['Name']+'=='+d.version for d in m.distributions())))</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>wheel-probe-3.14</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.04s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+<tr>
+<td>wheel-probe-3.15</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.05s</td>
+<td><code>uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project</code></td>
+<td>See exit status; no test-count assertion.</td>
+</tr>
+</tbody>
+</table></main>
+</body></html>

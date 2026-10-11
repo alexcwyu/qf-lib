@@ -20,6 +20,7 @@ from pandas.tseries.frequencies import to_offset
 
 from qf_lib.analysis.common.abstract_document import AbstractDocument
 from qf_lib.common.utils.error_handling import ErrorHandling
+from qf_lib.common.utils.dataframe.apply_to_column_groups import apply_to_column_groups
 from qf_lib.analysis.trade_analysis.trades_generator import TradesGenerator
 from qf_lib.backtesting.monitoring.backtest_result import BacktestResult
 from qf_lib.backtesting.portfolio.backtest_position import BacktestPositionSummary
@@ -107,8 +108,11 @@ class PortfolioAnalysisSheet(AbstractDocument):
 
         # Group tickers by name and for each name and date check if there was at least one position open with any
         # of the corresponding tickers. Finally sum all the assets that had a position open on a certain date.
-        number_of_assets = positions_history.groupby(by=lambda ticker: ticker.name, axis='columns') \
-            .apply(lambda x: x.notna().any(axis=1)).sum(axis=1)
+        number_of_assets = apply_to_column_groups(
+            positions_history,
+            by=lambda ticker: ticker.name,
+            func=lambda frame: frame.notna().any(axis=1),
+        ).sum(axis=1)
         number_of_assets_decorator = DataElementDecorator(number_of_assets)
         chart.add_decorator(number_of_assets_decorator)
         legend.add_entry(number_of_assets_decorator, "Assets")
@@ -138,14 +142,17 @@ class PortfolioAnalysisSheet(AbstractDocument):
         if positions_history.empty:
             raise ValueError("No positions found in positions history")
 
-        positions_history = positions_history.applymap(
+        positions_history = positions_history.map(
             lambda x: x.total_exposure if isinstance(x, BacktestPositionSummary) else 0)
 
         # Group all the tickers by their names and take the maximal total exposure for each of the groups - in case
         # if two contracts for a single asset will be included in the open positions in the portfolio at any point of
         # time, only one (with higher total exposure) will be considered while generating the top assets plot
-        assets_history = positions_history.groupby(by=lambda ticker: ticker.name, axis='columns').apply(
-            lambda x: x.abs().max(axis=1))
+        assets_history = apply_to_column_groups(
+            positions_history,
+            by=lambda ticker: ticker.name,
+            func=lambda frame: frame.abs().max(axis=1),
+        )
 
         for assets_number in top_assets_numbers:
             # For each date (row), find the top_assets largest assets and compute the mean value of their market value
@@ -210,7 +217,7 @@ class PortfolioAnalysisSheet(AbstractDocument):
 
         # Get the assets history
         assets_history = self.backtest_result.portfolio.positions_history()
-        assets_history = assets_history.applymap(
+        assets_history = assets_history.map(
             lambda x: x.total_exposure if isinstance(x, BacktestPositionSummary) else 0)
 
         def gini(group):
@@ -273,7 +280,7 @@ class PortfolioAnalysisSheet(AbstractDocument):
                 positions[column] = 0.0
 
         positions["Out"] = 1.0 - positions["Long"] - positions["Short"]
-        positions[["Long", "Short", "Out"]] = positions[["Long", "Short", "Out"]].applymap(lambda x: '{:.2%}'.format(x))
+        positions[["Long", "Short", "Out"]] = positions[["Long", "Short", "Out"]].map(lambda x: '{:.2%}'.format(x))
         positions = positions.fillna(0.0)
 
         table = DFTable(positions, css_classes=['table', 'left-align'])
@@ -316,9 +323,9 @@ class PortfolioAnalysisSheet(AbstractDocument):
         self.document.add_element(NewPageElement())
         self.document.add_element(HeadingElement(level=2, text="Performance of each asset"))
         final_performance = performance_df. \
-            applymap(lambda pnl_series: pnl_series.iloc[-1] if not pnl_series.empty else 0.0). \
+            map(lambda pnl_series: pnl_series.iloc[-1] if not pnl_series.empty else 0.0). \
             sort_values(by="Overall performance", ascending=False). \
-            applymap(lambda p: '{:,.2f}'.format(p)). \
+            map(lambda p: '{:,.2f}'.format(p)). \
             reset_index()
         table = DFTable(final_performance, css_classes=['table', 'left-align'])
         table.add_columns_classes(["Tickers name"], 'wide-column')

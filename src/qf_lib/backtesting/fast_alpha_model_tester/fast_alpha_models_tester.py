@@ -467,7 +467,7 @@ class FastAlphaModelTester:
         """
         if self._frequency == Frequency.DAILY:
             backtest_dates = pd.date_range(self._start_date, self._end_date, freq="D")
-            backtest_dates = QFSeries(backtest_dates.to_series())
+            backtest_dates = QFSeries(0, index=backtest_dates, dtype=int)
             backtest_dates[:] = 0
         elif self._frequency > Frequency.DAILY:
             days_dates = pd.date_range(self._start_date, self._end_date, freq="D")
@@ -476,7 +476,7 @@ class FastAlphaModelTester:
                 start_time = day + RelativeDelta(**self._start_time)
                 end_time = day + RelativeDelta(**self._end_time)
                 signal_times_for_a_day = pd.date_range(start_time, end_time, freq=self._frequency.to_pandas_freq())
-                signal_times_for_a_day = QFSeries(signal_times_for_a_day.to_series())
+                signal_times_for_a_day = QFSeries(0, index=signal_times_for_a_day, dtype=int)
                 signal_times_for_a_day[:] = 0
 
                 if self._close_position_at_the_end_of_day:

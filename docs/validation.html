@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Validation evidence: qf-lib</title><style>
+:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
+@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
+header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
+main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
+h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
+a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
+table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
+.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
+main{min-width:0;overflow-wrap:anywhere}table,pre{max-width:100%}.diagram svg{display:block}
+th,td{min-width:120px;overflow-wrap:normal}
+@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
+@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
+</style></head><body><header>Engineering documentation · <a href="validation.md">Markdown source</a></header><main><h1 id="validation-evidence-qf-lib">Validation evidence: qf-lib<a class="headerlink" href="#validation-evidence-qf-lib" title="Permanent link">&para;</a></h1>
+<p>Run date: 2026-10-12. Branch: <code>feature/ayu_develop</code>. Interpreter: <code>3.15.0 (main, Oct  9 2026, 15:11:47) [Clang 22.1.3 ]</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>lock</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>sync</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>compile</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>build</td>
+<td>passed</td>
+</tr>
+<tr>
+<td>tests</td>
+<td>passed</td>
+</tr>
+</tbody>
+</table>
+<h2 id="current-result-and-compatibility-decisions">Current result and compatibility decisions<a class="headerlink" href="#current-result-and-compatibility-decisions" title="Permanent link">&para;</a></h2>
+<ul>
+<li>The complete supplied suite passes on managed Python 3.15.0: 876 passed, 109 preexisting skips (including one collection skip), exit0. Skips retain the upstream checks for unavailable Bloomberg/Quandl/Haver/other licensed services; none are introduced by maintenance.</li>
+<li>Managed Python 3.15.0 resolves and installs the complete extra/dev environment. Native cvxopt builds after installing SuiteSparse; WeasyPrint uses Pango/GLib.</li>
+<li>NumPy sign is imported from its public namespace; plotting uses public colormaps and loads the packaged qf style directly, preserving plotting behavior.</li>
+<li>Pandas copy-on-write updates write directly into owning frames, numeric portfolio/volume arrays retain mutable copies, factor intercept extraction uses iloc, and removed frequency aliases use their current equivalent values. Bloomberg missing numeric fields remain NaN.</li>
+<li>Internal return aggregation bypasses the deprecated public grouping entry point while that public API keeps its warning and behavior. The existing deprecated-API cases explicitly check the warning and retain their value assertions.</li>
+<li>The existing CSV fixture uses its supported dateformat=mixed option, and the existing crypto-client fixture mocks unused stock-client authentication. JWT fixtures retain expiration assertions with a valid-length test-only HS256 key. No cases are added or disabled.</li>
+<li>Verified latest yfinance1.7.0 source closes each worker-owned Peewee/SQLite cache connection in finally. Threaded requests, values, error recording and progress behavior are preserved. See vendor/yfinance/PROVENANCE.md and retained license. The existing Yahoo/related alpha subset passes all25 cases.</li>
+<li>The source archive includes vendor sources and uv.lock. Ordinary wheel installers do not interpret tool.uv.sources; use the documented uv checkout/sdist workflow to reproduce the dependency resource patch.</li>
+<li>Bloomberg blpapi3.26.9.1 is resolved from its official explicit index, including current ARM64 wheels. Normal uv compile-bytecode installation handles its existing docstring compile warnings; runtime pytest warning policy remains strict. The proprietary SDK license prohibits modification.</li>
+<li>WeasyPrint requires native Pango/GLib; brew install pango supplies these prerequisites and DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib exposes them to the managed macOS interpreter.</li>
+<li>Alpaca-py0.44.0 imports websockets.legacy, which deprecated since14. The optional Alpaca extra selects the latest compatible13.1 API family.</li>
+<li>The current Myst parser needs docutils&lt;0.23; the docs extra retains that compatibility range. Existing Bloomberg BEAP APIs are preserved although upstream removed them.</li>
+</ul>
+<p>Current unresolved checks:</p>
+<p>All supplied checks recorded below passed.</p>
+<h2 id="latest-full-suite-output">Latest full-suite output<a class="headerlink" href="#latest-full-suite-output" title="Permanent link">&para;</a></h2>
+<pre><code class="language-text">t using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:74: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:64: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:115: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:105: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:86: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_table.py:96: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:242: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:225: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:234: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:86: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:197: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:214: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:205: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:179: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:188: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:112: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:165: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:153: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:144: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:104: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:94: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:76: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:135: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/quandl/test_quandl_timeseries.py:126: `quandl_key` property was not found in the settings.
+Set it using `QUANTFIN_SECRET` environment variable. Sample value of the env. variable:
+{&quot;quandl_key&quot;: &quot;zW14dr45trz4up4d4juZ&quot;}
+To get the key, register an account at https://www.quandl.com
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:112: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:126: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:105: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:133: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:120: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:144: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:140: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:74: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:95: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:56: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/integration_tests/data_providers/test_haver.py:86: No Haver installed, skipping tests
+SKIPPED [1] src/qf_lib/tests/manual_tests/test_strategies.py:33: No Bloomberg connection
+SKIPPED [1] src/qf_lib/tests/manual_tests/test_strategies.py:41: No Bloomberg connection
+SKIPPED [1] src/qf_lib/tests/manual_tests/test_strategies.py:49: No Bloomberg connection
+================= 876 passed, 109 skipped in 622.82s (0:10:22) =================
+
+</code></pre>
+<h2 id="exact-commands-and-exit-codes">Exact commands and exit codes<a class="headerlink" href="#exact-commands-and-exit-codes" title="Permanent link">&para;</a></h2>
+<p>Unsuccessful rows are retained as historical compatibility attempts; they are not claims that a current passing check remains blocked. Source-build probes use isolated temporary copies to preserve the selected repository environment.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th style="text-align: right;">Exit</th>
+<th style="text-align: right;">Seconds</th>
+<th>Evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.15</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-3.15.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.15 --no-build --no-install-project</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.05</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-wheel-probe-3.15.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.29</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --no-build --no-install-project</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.04</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-wheel-probe-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.49</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-3.14.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.27</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-build.log">log</a></td>
+</tr>
+<tr>
+<td><code>/Users/alex/.local/share/uv/python/cpython-3.14-macos-aarch64-none/bin/python3.14 -m compileall -q src</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.72</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-compile.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.72</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7.35</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-numpy-public-api.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.89</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-bloomberg-sdk.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.46</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-bloomberg-sdk.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">12.17</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-bloomberg-sdk.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --compile-bytecode</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.65</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-bloomberg-bytecode.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6.04</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-bloomberg-bytecode.log">log</a></td>
+</tr>
+<tr>
+<td><code>brew install pango</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9.05</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-native-pango.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1.09</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-alpaca-legacy-websockets.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --all-extras --all-groups --python 3.14 --compile-bytecode</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.97</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-alpaca-legacy-websockets.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5.18</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-native-rendering-sdk.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -m compileall -q src</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.5</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-compile-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build --python 3.14</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6.0</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-build-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --no-sync python -c import sys,importlib.metadata,json; print(sys.version); print(json.dumps({d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},indent=2,sort_keys=True))</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.18</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-versions-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">807.1</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-docstring-native-sdk.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade --python 3.15</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.18</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-python315-source-supported.log">log</a></td>
+</tr>
+<tr>
+<td><code>env CVXOPT_SUITESPARSE_INC_DIR=/opt/homebrew/include/suitesparse CVXOPT_SUITESPARSE_LIB_DIR=/opt/homebrew/lib uv sync --all-extras --all-groups --python 3.15 --compile-bytecode</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8.15</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-python315-source-supported.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest src/qf_lib/tests/unit_tests</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">33.9</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-unit-current-scientific-apis.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/unit_tests -q</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">25.1</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-unit-pandas-api-fixes.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v</code></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">601.91</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-python315-full-current-apis.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv lock --upgrade</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.26</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-lock-yfinance-worker-cleanup.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv sync --frozen --all-extras --all-groups --compile-bytecode</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.98</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-sync-yfinance-worker-cleanup.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests/integration_tests/data_providers/yfinance_data_provider/test_yfinance_data_provider.py src/qf_lib/tests/unit_tests/backtesting/alpha_model/test_alpha_model.py -v</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.45</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-yfinance-owner-thread-cleanup.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv build</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3.29</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-build-python315-yfinance-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --frozen --all-extras --all-groups python -m compileall -q src vendor</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.73</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-compile-python315-yfinance-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --frozen --all-extras --all-groups python -c import sys, importlib.metadata as m; print(sys.version); print('\n'.join(sorted(d.metadata['Name']+'=='+d.version for d in m.distributions())))</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.24</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-versions-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>env DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --frozen --all-extras --all-groups python -m pytest src/qf_lib/tests -v</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">623.97</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-tests-python315-full-final-cleanup.log">log</a></td>
+</tr>
+<tr>
+<td><code>brew list --versions pango glib suite-sparse</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.93</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-native-versions-final.log">log</a></td>
+</tr>
+<tr>
+<td><code>uv run --frozen --all-extras --all-groups python /tmp/qf-artifact-verify.py</code></td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.29</td>
+<td><a href="../../docs/maintenance-2026-10-12/qf-lib-artifact-content-final.log">log</a></td>
+</tr>
+</tbody>
+</table>
+<p>The versions-final log records the exact interpreter patch release and every installed dependency version. The machine-readable <a href="../../docs/maintenance-2026-10-12/qf-lib-result.json">result</a> includes branch/default ancestry, status, artifacts and unresolved checks.</p>
+<h2 id="dependency-floor-refresh">Dependency floor refresh<a class="headerlink" href="#dependency-floor-refresh" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Before</th>
+<th>After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The table records the initial metadata refresh. Later compatibility constraints and vendor sources are explained above and the final authoritative requirements are in <a href="../pyproject.toml">pyproject.toml</a> and <a href="../uv.lock">uv.lock</a>. No test cases were added, removed or disabled. Existing deprecated-API cases retain their assertions while explicitly checking the documented warning.</p></main>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
+mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
+</script></body></html>

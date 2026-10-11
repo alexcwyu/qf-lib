@@ -124,7 +124,7 @@ def get_mock_response(status_code=200, chunks=None, json_body=None, method="GET"
 
 def get_mock_token(exp: float = None) -> str:
     exp = exp or (time.time() + 3600)
-    return jwt.encode({"exp": exp}, "secret", algorithm="HS256")
+    return jwt.encode({"exp": exp}, "test-only-signing-key-at-least-32-bytes", algorithm="HS256")
 
 
 @pytest.fixture

@@ -47,7 +47,7 @@ class BloombergDataLicenseTypeConverter:
 
     @staticmethod
     def _time_conversion(series: QFSeries) -> QFSeries:
-        return to_datetime(series, errors='coerce').dt.time.replace({NaT: None})
+        return to_datetime(series, format='mixed', errors='coerce').dt.time.replace({NaT: None})
 
     @staticmethod
     def _string_conversion(series: QFSeries) -> QFSeries:

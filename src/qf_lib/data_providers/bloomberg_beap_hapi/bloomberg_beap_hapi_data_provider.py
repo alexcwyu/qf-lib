@@ -15,7 +15,7 @@
 import json
 import os
 import warnings
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Union, Sequence, Dict, List, Optional, Tuple
 from urllib.parse import urljoin
@@ -511,8 +511,8 @@ class BloombergBeapHapiDataProvider(AbstractPriceDataProvider, TickersUniversePr
         return fields_list_id
 
     def _download_response(self, request_id: str):
-        expiration_timestamp = datetime.utcnow() + self.reply_timeout
-        while datetime.utcnow() < expiration_timestamp:
+        expiration_timestamp = datetime.now(timezone.utc).replace(tzinfo=None) + self.reply_timeout
+        while datetime.now(timezone.utc).replace(tzinfo=None) < expiration_timestamp:
             # Read the next available event
             event = self.sse_client.read_event()
 

@@ -34,7 +34,7 @@ class TestExcelImport(TestCaseWithFileOutput):
     _templates_dir = join(dirname(__file__), 'dummies')
 
     def setUp(self):
-        dates = DatetimeIndex(date_range(start='2014-01-01', freq='d', periods=10))
+        dates = DatetimeIndex(date_range(start='2014-01-01', freq='D', periods=10))
         returns = np.arange(0, 1, 0.1)
         self.test_series = QFSeries(index=dates, data=returns)
 

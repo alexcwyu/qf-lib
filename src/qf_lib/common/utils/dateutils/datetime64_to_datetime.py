@@ -31,4 +31,4 @@ def datetime64_to_datetime(np_datetime64: datetime64) -> datetime.datetime:
         python datetime object
     """
 
-    return datetime.datetime.utcfromtimestamp((np_datetime64 - datetime64(0, 's')) / timedelta64(1, 's'))
+    return datetime.datetime.fromtimestamp((np_datetime64 - datetime64(0, 's')) / timedelta64(1, 's'), datetime.timezone.utc).replace(tzinfo=None)

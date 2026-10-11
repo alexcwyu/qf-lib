@@ -75,7 +75,7 @@ class ElasticNetFactorsIdentifierSimplified(FactorsIdentifier):
             Subset of the original regressors_df. Only contains rows corresponding to dates common for it and
             analysed_tms. Only contains columns corresponding to coefficients which should be included in the model
         """
-        estimator = ElasticNetCV(l1_ratio=self.l1_ratio, n_alphas=self.number_of_alphas, cv=self.NUMBER_OF_FOLDS,
+        estimator = ElasticNetCV(l1_ratio=self.l1_ratio, alphas=self.number_of_alphas, cv=self.NUMBER_OF_FOLDS,
                                  fit_intercept=self.is_intercept)
         feature_selector = SelectFromModel(estimator, threshold=self.epsilon)
         feature_selector.fit(regressors_df, analysed_tms)

@@ -1,3 +1,4 @@
+import pytest
 #     Copyright 2016-present CERN – European Organization for Nuclear Research
 #
 #     Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,14 +30,16 @@ class TestIndexGrouping(TestCase):
         self.series = QFSeries(index=self.index, data=self.index)
 
     def test_daily_grouping(self):
-        daily_grouping = get_grouping_for_frequency(Frequency.DAILY)
+        with pytest.deprecated_call():
+            daily_grouping = get_grouping_for_frequency(Frequency.DAILY)
         actual_result = list(self.series.groupby(daily_grouping))
 
         day_ids, _ = zip(*actual_result)
         self.assertEqual(len(self.index), len(day_ids))
 
     def test_weekly_grouping(self):
-        weekly_grouping = get_grouping_for_frequency(Frequency.WEEKLY)
+        with pytest.deprecated_call():
+            weekly_grouping = get_grouping_for_frequency(Frequency.WEEKLY)
         actual_result = list(self.series.groupby(weekly_grouping))
 
         # first week should contain everything up to 2014-12-28 and should belong to the last week of the 2014
@@ -57,7 +60,8 @@ class TestIndexGrouping(TestCase):
         self.assertEqual(series.max(), str_to_date("2015-01-02"))
 
     def test_monthly_grouping(self):
-        monthly_grouping = get_grouping_for_frequency(Frequency.MONTHLY)
+        with pytest.deprecated_call():
+            monthly_grouping = get_grouping_for_frequency(Frequency.MONTHLY)
         actual_result = list(self.series.groupby(monthly_grouping))
 
         month_id, series = actual_result[0]
@@ -78,7 +82,8 @@ class TestIndexGrouping(TestCase):
         self.assertEqual(14, len(actual_result))
 
     def test_yearly_grouping(self):
-        yearly_grouping = get_grouping_for_frequency(Frequency.YEARLY)
+        with pytest.deprecated_call():
+            yearly_grouping = get_grouping_for_frequency(Frequency.YEARLY)
         actual_result = list(self.series.groupby(yearly_grouping))
 
         year, series = actual_result[0]

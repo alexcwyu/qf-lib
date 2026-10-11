@@ -97,7 +97,7 @@ class TestSeries(TestCase):
 
         expected_interval = pd.Timedelta("1 day")
         expected_frequency = 2 / 3
-        dates = pd.date_range('2016-04-01', periods=4, freq='b')
+        dates = pd.date_range('2016-04-01', periods=4, freq='B')
         test_series = QFSeries(data=[0, 0, 0, 0], index=dates)
 
         actual_interval, actual_frequency = test_series.infer_interval()

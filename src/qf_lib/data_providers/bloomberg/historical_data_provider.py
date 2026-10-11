@@ -175,10 +175,9 @@ class HistoricalDataProvider:
                 dates_fields_values = QFDataFrame(np.nan, index=dates, columns=requested_fields)
 
                 for field_name in requested_fields:
-                    dates_fields_values.loc[:, field_name] = [
-                        convert_field(data_of_date_elem, field_name)
-                        for data_of_date_elem in field_data_array.values()
-                    ]
+                    field_values = [convert_field(elem, field_name) for elem in field_data_array.values()]
+                    dates_fields_values.loc[:, field_name] = [np.nan if value is None else value
+                                                              for value in field_values]
                 security_name = security_data.getElementAsString(SECURITY)
 
                 try:

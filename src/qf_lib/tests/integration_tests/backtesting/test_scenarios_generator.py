@@ -13,6 +13,7 @@
 #     limitations under the License.
 
 import unittest
+import pytest
 from datetime import datetime
 from unittest import TestCase
 
@@ -79,8 +80,9 @@ class TestScenariosGenerator(TestCase):
         """ Number of trades created will be smaller than the desired number of trades."""
         time_in_the_market = 0.1
         num_of_trades = 8
-        scenario = self.generator.make_exposure_scenarios(datetime(2021, 10, 1), datetime(2021, 10, 31), num_of_trades,
-                                                          time_in_the_market, Exposure.LONG, Frequency.DAILY, seed=10)
+        with pytest.warns(UserWarning, match="number of trades.*reduced"):
+            scenario = self.generator.make_exposure_scenarios(datetime(2021, 10, 1), datetime(2021, 10, 31), num_of_trades,
+                                                              time_in_the_market, Exposure.LONG, Frequency.DAILY, seed=10)
         self.assertEqual(scenario.size, 31)
         lengths_of_trades = self._compute_trades_lengths(scenario)
 
@@ -90,8 +92,9 @@ class TestScenariosGenerator(TestCase):
     def test_make_exposure_scenarios__no_time_in_the_market(self):
         time_in_the_market = 0
         num_of_trades = 1
-        scenario = self.generator.make_exposure_scenarios(datetime(2021, 10, 1), datetime(2021, 10, 31), num_of_trades,
-                                                          time_in_the_market, Exposure.LONG, Frequency.DAILY, seed=10)
+        with pytest.warns(UserWarning, match="number of trades.*reduced"):
+            scenario = self.generator.make_exposure_scenarios(datetime(2021, 10, 1), datetime(2021, 10, 31), num_of_trades,
+                                                              time_in_the_market, Exposure.LONG, Frequency.DAILY, seed=10)
         self.assertEqual(scenario.size, 31)
         lengths_of_trades = self._compute_trades_lengths(scenario)
 

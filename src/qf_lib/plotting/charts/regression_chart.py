@@ -114,7 +114,7 @@ class RegressionChart(Chart):
         self.axes.set_ylim([-max_ret, max_ret])
 
         props = dict(boxstyle='square', facecolor='white', alpha=0.5)
-        textstr = '$\\beta={0:.2f}$\n$\\alpha={1:.2%}$$\%$\n$R^2={2:.2}$'.format(beta, alpha, r_squared)
+        textstr = '$\\beta={0:.2f}$\n$\\alpha={1:.2%}$$\\%$\n$R^2={2:.2}$'.format(beta, alpha, r_squared)
         font_size = mpl.rcParams['legend.fontsize']
 
         self.axes.text(
@@ -132,7 +132,7 @@ class RegressionChart(Chart):
         self.axes.set_ylim([-max_ret, max_ret])
 
         props = dict(boxstyle='square', facecolor=colors[2], alpha=0.5)
-        textstr = 'tail $\\beta={0:.2f}$\ntail $\\alpha={1:.2%}$$\%$\ntail $R^2={2:.2}$'.format(beta, alpha, r_squared)
+        textstr = 'tail $\\beta={0:.2f}$\ntail $\\alpha={1:.2%}$$\\%$\ntail $R^2={2:.2}$'.format(beta, alpha, r_squared)
         font_size = mpl.rcParams['legend.fontsize']
 
         self.axes.text(

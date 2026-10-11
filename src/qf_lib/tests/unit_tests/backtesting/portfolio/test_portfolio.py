@@ -15,7 +15,7 @@
 import unittest
 from unittest.mock import Mock
 
-from numpy.core.umath import sign
+from numpy import sign
 
 from qf_lib.analysis.trade_analysis.trades_generator import TradesGenerator
 from qf_lib.backtesting.portfolio.portfolio import Portfolio

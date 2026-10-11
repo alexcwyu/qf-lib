@@ -196,7 +196,7 @@ class Frequency(Enum):
                 Frequency.WEEKLY: "W",
                 Frequency.MONTHLY: "ME",
                 Frequency.QUARTERLY: "QE",
-                Frequency.YEARLY: "A",
+                Frequency.YEARLY: "YE",
                 Frequency.IRREGULAR: None
             }
         elif version("pandas") < "2.2.0":

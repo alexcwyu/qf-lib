@@ -208,7 +208,7 @@ class DataModel:
     def _get_model_params(self, fit):
         if self.input_data.is_fit_intercept:
             coefficients_ = fit.params[:-1]  # last value is a constant parameter
-            intercept_ = fit.params[-1]  # it needs to be extracted into intercept_ attribute
+            intercept_ = fit.params.iloc[-1]  # it needs to be extracted into intercept_ attribute
         else:
             coefficients_ = fit.params
             intercept_ = 0.0

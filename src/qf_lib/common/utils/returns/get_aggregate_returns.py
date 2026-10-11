@@ -19,7 +19,7 @@ from pandas import DatetimeIndex
 
 from qf_lib.common.enums.frequency import Frequency
 from qf_lib.common.utils.dateutils.iso_to_gregorian import iso_to_gregorian
-from qf_lib.common.utils.returns.index_grouping import get_grouping_for_frequency
+from qf_lib.common.utils.returns.index_grouping import _get_grouping_for_frequency
 from qf_lib.containers.series.cast_series import cast_series
 from qf_lib.containers.series.qf_series import QFSeries
 from qf_lib.containers.series.simple_returns_series import SimpleReturnsSeries
@@ -45,7 +45,7 @@ def get_aggregate_returns(series: QFSeries, convert_to: Frequency, multi_index: 
         Aggregated returns.
     """
     simple_rets = series.to_simple_returns()
-    grouping = get_grouping_for_frequency(convert_to)
+    grouping = _get_grouping_for_frequency(convert_to)
 
     # fix for grouping with multi-index (whenever a tuple is identifying a group.
     # Example: in weekly grouping a group could be identified by a tuple (2014, 52). Then the whole series would be

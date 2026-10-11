@@ -102,7 +102,7 @@ class Slippage(metaclass=ABCMeta):
                                                   look_ahead_bias=True)
         volume_df = volume_df.fillna(0.0)
         try:
-            volumes = volume_df.loc[start_date, tickers].values
+            volumes = volume_df.loc[start_date, tickers].to_numpy(copy=True)
         except KeyError:
             volumes = np.repeat(0, len(tickers))
 

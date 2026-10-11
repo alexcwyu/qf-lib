@@ -16,17 +16,11 @@ def _setup_matplotlib_config():
     from os.path import join, dirname
 
     import matplotlib.pyplot as plt
-    import matplotlib.style.core as style_core
-
     this_dir = dirname(__file__)
-    style_lib_dir = join(this_dir, "stylelib")
-
-    # that is pretty dirty but I've found no other way to set your own config directory
-    # (why there is no matplotlib function like set_config_dir() or add_config_dir() ?!)
-    style_core.USER_LIBRARY_PATHS = [join(style_lib_dir)]
-    style_core.reload_library()
-
-    plt.style.use('qfstyle')
+    style_path = join(this_dir, "stylelib", "qfstyle.mplstyle")
+    # Load the bundled style through the public API instead of mutating
+    # Matplotlib's deprecated private style registry.
+    plt.style.use(style_path)
 
 
 _setup_matplotlib_config()

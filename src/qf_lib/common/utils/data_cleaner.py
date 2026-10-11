@@ -124,7 +124,7 @@ class DataCleaner:
                 benchmark_tms, nans_in_column_idx)
             benchmark_values_for_missing_dates = benchmark_common_tms[nans_common_idx]
             missing_values = beta * benchmark_values_for_missing_dates + alpha
-            column[nans_in_column_idx] = missing_values
+            result_dataframe.loc[nans_in_column_idx, result_dataframe.columns[i]] = missing_values
 
         return result_dataframe
 

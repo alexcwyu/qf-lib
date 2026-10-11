@@ -13,7 +13,7 @@
 #     limitations under the License.
 
 from typing import Tuple
-from matplotlib.cm import get_cmap
+from matplotlib import colormaps
 from matplotlib.dates import DateFormatter
 from matplotlib.ticker import StrMethodFormatter
 from qf_lib.documents_utils.document_exporting.pdf_exporter import PDFExporter
@@ -111,7 +111,7 @@ class ExposureSheet(AbstractDocument):
         chart = LineChart()
         # Place legend on bottom right corner of plot
         legend = LegendDecoratorCustomPosition(legend_placement=AxisLocation.LOWER_LEFT)
-        cmap = get_cmap("tab10", len(df.columns))
+        cmap = colormaps.get_cmap("tab10", len(df.columns))
 
         # iterate columns
         for column, label, color_index in zip(df.columns, df.columns.values, range(0, cmap.N)):

@@ -52,7 +52,7 @@ class TestCSVDataProviderDaily(TestCase):
         cls.path = str(Path(__file__).parent / Path('input_data'))
         cls.data_provider = CSVDataProvider(cls.path, cls.tickers, 'Open time', cls.field_to_price_field_dict,
                                             cls.fields, cls.start_date, cls.end_date,
-                                            Frequency.DAILY, )
+                                            Frequency.DAILY, dateformat="mixed")
 
     def test_cached_parameters(self):
         self.assertCountEqual(self.data_provider.cached_tickers,

@@ -138,9 +138,9 @@ class TestAlphaModelPositionsLimit(TestCase):
             return ticker
 
         assets_history = positions_history.rename(columns=map_to_traded_ticker)
-        assets_history = assets_history.groupby(level=0, axis=1).apply(func=(
-            lambda x: x.notna().any(axis=1).astype(int)
-        ))
+        assets_history = assets_history.T.groupby(level=0).apply(func=(
+            lambda x: x.notna().any(axis=0).astype(int)
+        )).T
 
         return assets_history.sum(axis=1)
 

@@ -50,7 +50,7 @@ class TestCSVDataProviderIntraday(TestCase):
         cls.path = str(Path(__file__).parent / Path('input_data'))
 
         cls.data_provider = CSVDataProvider(cls.path, cls.tickers, 'Open time', cls.field_to_price_field_dict,
-                                            cls.fields, cls.start_date, cls.end_date, Frequency.MIN_1)
+                                            cls.fields, cls.start_date, cls.end_date, Frequency.MIN_1, dateformat="mixed")
 
     def test_get_price_single_ticker_many_fields(self):
         prices = self.data_provider.get_price(self.ticker, self.price_fields, self.start_date, self.end_date, Frequency.MIN_1)

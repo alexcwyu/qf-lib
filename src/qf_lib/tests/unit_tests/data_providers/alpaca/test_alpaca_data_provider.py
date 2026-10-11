@@ -43,6 +43,9 @@ class TestAlpacaDataProvider(TestCase):
     def setUp(self):
         self.patcher = patch.object(CryptoHistoricalDataClient, 'get_crypto_bars', side_effect=self._mock_daily_data)
         self.patcher.start()
+        stock_client_patcher = patch('qf_lib.data_providers.alpaca_py.alpaca_data_provider.StockHistoricalDataClient')
+        stock_client_patcher.start()
+        self.addCleanup(stock_client_patcher.stop)
         self.data_provider = AlpacaDataProvider()
 
     def tearDown(self):

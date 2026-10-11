@@ -575,7 +575,7 @@ class TestBloombergBeapHapiParser(unittest.TestCase):
                                      ['2021-12-17', '2021-12-17'], ['2022-09-16',
                                                                     '2022-09-16']]  # For datetime64[ns] types, NaT represents missing values.
         actual_datetime_strings = [
-            [datetime_as_string(datetime64(dt[0]), unit='D'), datetime_as_string(datetime64(dt[1]), unit='D')] for dt in
+            [datetime_as_string(datetime64(dt[0], 'ns'), unit='D'), datetime_as_string(datetime64(dt[1], 'ns'), unit='D')] for dt in
             df.values]
         self.assertCountEqual(actual_datetime_strings, expected_datetime_strings)
 

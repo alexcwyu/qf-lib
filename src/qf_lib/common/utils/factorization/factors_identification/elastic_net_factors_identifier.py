@@ -136,7 +136,7 @@ class ElasticNetFactorsIdentifier(FactorsIdentifier):
         return coefficients_vector, solutions_idx
 
     def _optimize_using_enet(self, analysed_tms, regressors_df):
-        enet_optimizer = ElasticNetCV(l1_ratio=self.l1_ratio, n_alphas=self.number_of_alphas,
+        enet_optimizer = ElasticNetCV(l1_ratio=self.l1_ratio, alphas=self.number_of_alphas,
                                       cv=self.NUMBER_OF_FOLDS, fit_intercept=self.is_intercept)
         enet_optimizer.fit(regressors_df, analysed_tms)
         self.logger.debug('Finished Elastic Net analysis')

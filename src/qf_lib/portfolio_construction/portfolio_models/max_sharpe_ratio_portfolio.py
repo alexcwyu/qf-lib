@@ -69,7 +69,6 @@ class MaxSharpeRatioPortfolio(Portfolio):
     def _find_scaling_factor_for_returns(self, minimised_func):
         options = {
             'maxiter': self.max_iter,
-            'disp': False
         }
         optimization_result = scipy.optimize.minimize(
             fun=minimised_func, x0=np.array([0]), method='L-BFGS-B', bounds=[(0, None)], options=options)

@@ -1,3 +1,43 @@
+<!-- ayu-maintenance-2026-10-12 -->
+# Current uv development workflow
+
+The maintained branch is `feature/ayu_develop`. The selected interpreter is Python `3.15`; `requires-python` records the range that was actually resolved. Python 3.15 was attempted first. Dependency/native-wheel failures and fallback evidence are recorded in [validation.md](validation.md).
+
+```sh
+export UV_PYTHON_PREFERENCE=only-managed
+uv python install 3.15
+uv lock --check
+uv sync --frozen --all-extras --all-groups --compile-bytecode
+uv run --no-sync python -m compileall -q src
+uv build
+DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest
+```
+
+Use `uv lock --upgrade` when intentionally refreshing dependencies, then review `pyproject.toml`, `uv.lock`, and the existing full test suite. The dependency floors were refreshed from current PyPI release metadata while preserving meaningful upstream upper bounds. Compatibility exceptions are documented with their resolver/test evidence rather than hidden by disabling tests.
+
+The `src/` layout and build-backend package discovery preserve public import names. Wheel/sdist resources include the source-associated data and templates. Optional vendor SDKs, live credentials, databases and graphical/native libraries retain their original runtime requirements. Examples and test fixtures are not promoted into the library API.
+
+<!-- prior-development-notes -->
+
+## Compatibility decisions
+
+- The complete supplied suite passes on managed Python 3.15.0: 876 passed, 109 preexisting skips (including one collection skip), exit0. Skips retain the upstream checks for unavailable Bloomberg/Quandl/Haver/other licensed services; none are introduced by maintenance.
+- Managed Python 3.15.0 resolves and installs the complete extra/dev environment. Native cvxopt builds after installing SuiteSparse; WeasyPrint uses Pango/GLib.
+- NumPy sign is imported from its public namespace; plotting uses public colormaps and loads the packaged qf style directly, preserving plotting behavior.
+- Pandas copy-on-write updates write directly into owning frames, numeric portfolio/volume arrays retain mutable copies, factor intercept extraction uses iloc, and removed frequency aliases use their current equivalent values. Bloomberg missing numeric fields remain NaN.
+- Internal return aggregation bypasses the deprecated public grouping entry point while that public API keeps its warning and behavior. The existing deprecated-API cases explicitly check the warning and retain their value assertions.
+- The existing CSV fixture uses its supported dateformat=mixed option, and the existing crypto-client fixture mocks unused stock-client authentication. JWT fixtures retain expiration assertions with a valid-length test-only HS256 key. No cases are added or disabled.
+- Verified latest yfinance1.7.0 source closes each worker-owned Peewee/SQLite cache connection in finally. Threaded requests, values, error recording and progress behavior are preserved. See vendor/yfinance/PROVENANCE.md and retained license. The existing Yahoo/related alpha subset passes all25 cases.
+- The source archive includes vendor sources and uv.lock. Ordinary wheel installers do not interpret tool.uv.sources; use the documented uv checkout/sdist workflow to reproduce the dependency resource patch.
+- Bloomberg blpapi3.26.9.1 is resolved from its official explicit index, including current ARM64 wheels. Normal uv compile-bytecode installation handles its existing docstring compile warnings; runtime pytest warning policy remains strict. The proprietary SDK license prohibits modification.
+- WeasyPrint requires native Pango/GLib; brew install pango supplies these prerequisites and DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib exposes them to the managed macOS interpreter.
+- Alpaca-py0.44.0 imports websockets.legacy, which deprecated since14. The optional Alpaca extra selects the latest compatible13.1 API family.
+- The current Myst parser needs docutils<0.23; the docs extra retains that compatibility range. Existing Bloomberg BEAP APIs are preserved although upstream removed them.
+
+- [Verified dependency source and license: yfinance](../vendor/yfinance/PROVENANCE.md)
+
+Native setup on macOS ARM64: `brew install pango suite-sparse`. Set `DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib` for WeasyPrint. Run `uv sync --frozen --all-extras --all-groups --compile-bytecode` before the strict suite to compile the proprietary SDK unmodified.
+
 # QF-Lib Development Guide
 
 ## Project Setup

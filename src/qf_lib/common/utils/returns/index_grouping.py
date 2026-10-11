@@ -24,6 +24,11 @@ def get_grouping_for_frequency(frequency):
     """
     warn('get_grouping_for_frequency is deprecated and will be removed in a future version of qf-lib',
          DeprecationWarning, stacklevel=2)
+    return _get_grouping_for_frequency(frequency)
+
+
+def _get_grouping_for_frequency(frequency):
+    """Build the grouping used internally without invoking the deprecated public API."""
     if frequency == Frequency.DAILY:
         grouping = [lambda x: x.day, lambda x: x.month, lambda x: x.year]
     elif frequency == Frequency.WEEKLY:

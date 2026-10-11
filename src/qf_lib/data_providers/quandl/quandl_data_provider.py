@@ -255,9 +255,10 @@ class QuandlDataProvider(AbstractPriceDataProvider):
             ticker = tickers_map[ticker_str]
             return ticker
 
-        ticker_grouping = data.groupby(extract_ticker_name, axis=1)
+        ticker_grouping = data.T.groupby(extract_ticker_name)
         ticker_to_df = {}  # type: Dict[str, pd.DataFrame]  # string -> DataFrame[dates, fields]
         for ticker, ticker_data_df in ticker_grouping:
+            ticker_data_df = ticker_data_df.T
             tickers_and_fields = (column_name.split(' - ') for column_name in ticker_data_df.columns)
             field_names = [field for (ticker, field) in tickers_and_fields]
             ticker_data_df.columns = field_names

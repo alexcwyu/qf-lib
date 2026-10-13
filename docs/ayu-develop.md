@@ -1,294 +1,228 @@
-# qf-lib: development, architecture and operations
+# QF-Lib: workflow, design and architecture
 
-Updated 2026-10-12 on `feature/ayu_develop`; source snapshot `f3e9f89e517a`. This guide follows the source in this checkout and separates available interfaces from verification evidence.
+Updated: **2026-10-13**
+Reviewed Git hash: `c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f`
+Branch: `feature/ayu_develop`
+Source diff SHA256: `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`
+Scope: **Event-driven research and trading toolkit** / Maintenance: **active**
+Languages: Python
 
-## Purpose and feature boundaries
+[HTML edition](ayu-develop.html) / [Development](development.md) / [Historical validation](validation.md) / [Full system comparison](../../docs/index.html)
 
-Quantitative finance containers, data providers, portfolio construction, event-driven trading sessions, execution simulation and document/report production.
+## Purpose and scope
 
-Specialized pandas/xarray containers carry quantitative operations. Trading sessions separate event scheduling, signals, sizing, portfolio state and execution policy. Provider integrations are isolated from calculation logic. Reporting uses plotting and HTML/PDF export. Bloomberg, Interactive Brokers and database/network integration cases need vendor SDKs, services or licensed credentials.
+Run notified trading sessions with replaceable brokers and portfolio construction models.
 
-## Main workflow
+## Features and support boundaries
 
-The following is the repository-specific logical workflow. Runtime execution details remain in the linked source and the validation record.
+Native = implemented here. Integration = supplied through a named host/API. Limited = material restriction. Not provided = evidenced scope exclusion. Unverified = support/absence not established. Not applicable = outside this artifact type.
+
+| Capability | Status | Implementation and limits | Source |
+|---|---|---|---|
+| Backtesting | Native | Configured backtest session, notifier loop and simulated broker. | [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) / [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) / [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) / [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45)) |
+| Live execution | Integration | IBBroker calls the IB client placeOrder. External service operation was not checked. | [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224)) |
+| Paper trading | Unverified | The reviewed IB order path does not establish a paper-account configuration. BacktestBroker provides native historical simulation, which is a different workflow. | [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224)) |
+| Event driven | Native | EventManager dispatches registered event notifiers. | [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) |
+| Vectorized | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Order management | Native | Simulated broker delegates placement/cancellation to an execution handler. | [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45)) |
+| Order types | Integration | IBBroker converts QF Order to IB order. Venue-supported styles depend on mapper and IB. | [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224)) |
+| Multi venue | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Crypto | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Equities | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Futures | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Options | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Forex | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Strategy api | Native | Session carries position sizer, order factory, filters and notifier callbacks. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) / [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) |
+| Optimization | Native | Minimum-variance solver constructs portfolio weights. | [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33)) |
+| Machine learning | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Reinforcement learning | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Portfolio | Native | Backtest portfolio dependency and minimum variance model. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) / [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33)) |
+| Risk management | Limited | Position sizer/order filters and covariance-based allocation. Concrete risk policy depends on configuration. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) / [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33)) |
+| Performance analytics | Native | BacktestMonitor produces configured tearsheets, portfolio/trade/exposure analyses, value history and summary stats. | [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104)) |
+| Historical data | Integration | Backtest session takes an external data provider. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) |
+| Streaming data | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Persistence | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Data pipeline | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Web ui | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Cli | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Monitoring | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Extension api | Native | Provider, broker, position sizer, filters, notifier and monitor injection. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) |
+| Native acceleration | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+| Distributed execution | Unverified | The inspected source does not establish this capability. This is not a claim of absence. | Not applicable to this repository scope. |
+
+## System components
+
+| Component | Responsibility | Source |
+|---|---|---|
+| TradingSession | Trading session dispatch lifecycle. | [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) |
+| BacktestTradingSession | Configured backtest session dependencies. | [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) |
+| EventManager | Event-to-notifier routing. | [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) |
+| BacktestBroker | Simulated broker facade with portfolio and execution handler. | [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45)) |
+| IBBroker | IB live/paper broker API integration. | [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224)) |
+| MinVariancePortfolio | Mathematical portfolio weight model. | [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33)) |
+| BacktestMonitor | Backtest analytics and report output. | [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104)) |
+
+## Architecture and component boundaries
+
+The component view summarizes inspected responsibility boundaries. Arrows identify the documented API/data dependencies; this is not a deployment-readiness claim.
 
 ```mermaid
 flowchart LR
-    S0["Configure data provider and session builder"]
-    S1["Schedule market and time events"]
-    S0 --> S1
-    S2["Generate signals and position targets"]
-    S1 --> S2
-    S3["Filter and size orders"]
-    S2 --> S3
-    S4["Simulate fills and update portfolio"]
-    S3 --> S4
-    S5["Monitor and export analysis report"]
-    S4 --> S5
+  N0["TradingSession"]
+  N1["BacktestTradingSession"]
+  N2["EventManager"]
+  N3["BacktestBroker"]
+  N4["IBBroker"]
+  N5["MinVariancePortfolio"]
+  N6["BacktestMonitor"]
+  N0 -->|"Call dispatch_next_event while continue_trading."| N2
+  N1 -->|"Configured broker dependency. Placement occurs through strategy callbacks, not directly in the dispatch loop."| N3
+  N0 -->|"Calls end-of-trading analytics on configured monitor."| N6
 ```
 
-1. Configure data provider and session builder.
-2. Schedule market and time events.
-3. Generate signals and position targets.
-4. Filter and size orders.
-5. Simulate fills and update portfolio.
-6. Monitor and export analysis report.
+- Call dispatch_next_event while continue_trading.: [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57))
+- Configured broker dependency. Placement occurs through strategy callbacks, not directly in the dispatch loop.: [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44))
+- Calls end-of-trading analytics on configured monitor.: [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) / [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104))
 
-## Components and ownership
+## Design decisions
 
-The entry point composes the source modules below; arrows indicate review/navigation boundaries rather than a claim that every module is called in every run.
+| Decision | Rationale | Tradeoff | Evidence |
+|---|---|---|---|
+| Share TradingSession lifecycle while injecting backtest-specific dependencies. | A notifier loop coordinates independently configured trading responsibilities. | Broker execution, monitoring and strategy behavior depend on injected components. | [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) / [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) / [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) |
 
-```mermaid
-flowchart TB
-    User["Application / research entry point"]
-    M0["backtesting/trading_session/backtest_trading_session.py"]
-    User --> M0
-    M1["backtesting/trading_session/backtest_trading_session_builder.py"]
-    User --> M1
-    M2["backtesting/execution_handler/simulated_execution_handler.py"]
-    User --> M2
-    M3["backtesting/position_sizer/position_sizer.py"]
-    User --> M3
-    M4["backtesting/monitoring/backtest_monitor.py"]
-    User --> M4
-    M5["containers/dataframe/qf_dataframe.py"]
-    User --> M5
-    M6["containers/series/qf_series.py"]
-    User --> M6
-    M7["data_providers/data_provider.py"]
-    User --> M7
-```
-
-| Source | Declared classes / functions | Implementation role |
-|---|---|---|
-| [src/qf_lib/backtesting/trading_session/backtest_trading_session.py](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) | BacktestTradingSession | See the public declarations and implementation linked here. |
-| [src/qf_lib/backtesting/trading_session/backtest_trading_session_builder.py](../src/qf_lib/backtesting/trading_session/backtest_trading_session_builder.py) | BacktestTradingSessionBuilder | See the public declarations and implementation linked here. |
-| [src/qf_lib/backtesting/execution_handler/simulated_execution_handler.py](../src/qf_lib/backtesting/execution_handler/simulated_execution_handler.py) | SimulatedExecutionHandler | See the public declarations and implementation linked here. |
-| [src/qf_lib/backtesting/position_sizer/position_sizer.py](../src/qf_lib/backtesting/position_sizer/position_sizer.py) | PositionSizer | See the public declarations and implementation linked here. |
-| [src/qf_lib/backtesting/monitoring/backtest_monitor.py](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) | BacktestMonitorSettings, BacktestMonitor | See the public declarations and implementation linked here. |
-| [src/qf_lib/containers/dataframe/qf_dataframe.py](../src/qf_lib/containers/dataframe/qf_dataframe.py) | QFDataFrame | See the public declarations and implementation linked here. |
-| [src/qf_lib/containers/series/qf_series.py](../src/qf_lib/containers/series/qf_series.py) | QFSeries | See the public declarations and implementation linked here. |
-| [src/qf_lib/data_providers/data_provider.py](../src/qf_lib/data_providers/data_provider.py) | DataProvider | See the public declarations and implementation linked here. |
-| [src/qf_lib/data_providers/bloomberg_dl/bloomberg_dl_data_provider.py](../src/qf_lib/data_providers/bloomberg_dl/bloomberg_dl_data_provider.py) | BloombergDLDataProvider | See the public declarations and implementation linked here. |
-| [src/qf_lib/common/utils/ratios/sortino_ratio.py](../src/qf_lib/common/utils/ratios/sortino_ratio.py) | sortino_ratio | See the public declarations and implementation linked here. |
-| [src/qf_lib/common/utils/dataframe/apply_to_column_groups.py](../src/qf_lib/common/utils/dataframe/apply_to_column_groups.py) | apply_to_column_groups | See the public declarations and implementation linked here. |
-| [src/qf_lib/analysis/tearsheets/portfolio_analysis_sheet.py](../src/qf_lib/analysis/tearsheets/portfolio_analysis_sheet.py) | PortfolioAnalysisSheet | See the public declarations and implementation linked here. |
-| [src/qf_lib/__init__.py](../src/qf_lib/__init__.py) | Package data / configuration | See the public declarations and implementation linked here. |
-| [src/qf_lib/_version.py](../src/qf_lib/_version.py) | Package data / configuration | See the public declarations and implementation linked here. |
-
-## Class design
-
-Methods and inheritance edges are taken from the selected declarations in the actual source. A missing edge means composition or an external base is not asserted here.
+## Class and interface relationships
 
 ```mermaid
 classDiagram
-    class BacktestTradingSession {
-        +__init__()
-        +use_data_preloading()
-        +get_preloaded_data_checksum()
-        +verify_preloaded_data()
-    }
-    class BacktestTradingSessionBuilder {
-        +__init__()
-        +set_backtest_name()
-        +set_frequency()
-        +set_market_open_and_close_time()
-        +set_scheduling_time_delay()
-    }
-    class SimulatedExecutionHandler {
-        +__init__()
-        +on_market_close()
-        +on_market_open()
-        +on_new_bar()
-        +on_orders_accept()
-    }
-    class PositionSizer {
-        +__init__()
-        +size_signals()
-    }
-    class BacktestMonitor {
-        +__init__()
-        +end_of_trading_update()
-        +end_of_day_update()
-        +real_time_update()
-        +record_transaction()
-    }
-    class QFDataFrame {
-        +num_of_columns()
-        +num_of_rows()
-        +to_log_returns()
-        +to_simple_returns()
-        +to_prices()
-    }
-    class QFSeries {
-        +__init__()
-        +to_log_returns()
-        +to_simple_returns()
-        +to_prices()
-        +min_max_normalized()
-    }
+  class N0["TradingSession"] {
+    <<class>>
+    +start_trading()
+  }
+  class N1["BacktestTradingSession"] {
+    <<class>>
+    +__init__()
+  }
+  class N2["EventManager"] {
+    <<class>>
+    +dispatch_next_event()
+    +_dispatch_event()
+  }
+  class N3["BacktestBroker"] {
+    <<class>>
+    +place_orders()
+    +cancel_order()
+  }
+  class N4["IBBroker"] {
+    <<class>>
+    +_execute_single_order()
+  }
+  class N5["MinVariancePortfolio"] {
+    <<class>>
+    +get_weights()
+  }
+  class N6["BacktestMonitor"] {
+    <<class>>
+    +end_of_trading_update()
+  }
+  N1 --|> N0 : BacktestTradingSession derives from TradingSession.
+  N0 ..> N2 : start_trading invokes event_manager.dispatch_next_event.
+  N1 ..> N3 : Configured broker argument can be BacktestBroker.
+  N0 ..> N6 : start_trading calls the configured end-of-trading monitor.
 ```
 
-## End-to-end interaction
+Each node is a reviewed source symbol. Function/module nodes are explicitly labeled; they do not imply Python classes. Only reviewed relationships are drawn.
 
-This sequence presents the responsibilities of the main workflow, including the state/result boundary. The linked classes and functions provide the exact method-level contract.
+- **TradingSession** (class): [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57))
+- **BacktestTradingSession** (class): [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44))
+- **EventManager** (class): [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88))
+- **BacktestBroker** (class): [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45))
+- **IBBroker** (class): [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224))
+- **MinVariancePortfolio** (class): [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33))
+- **BacktestMonitor** (class): [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104))
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant Entry as Configure data provider and session builder
-    participant Process as Generate signals and position targets
-    participant State as Simulate fills and update portfolio
-    participant Output as Monitor and export analysis report
-    User->>Entry: Supply configuration and inputs
-    Entry->>Process: Schedule market and time events
-    Process->>State: Filter and size orders
-    State-->>Process: Updated execution / calculation state
-    Process->>Output: Produce results
-    Output-->>User: Report outcomes
-```
+## Workflow
 
-## Source dependency direction
+### Representative source-backed flow
 
-These edges are actual explicit imports between the selected source modules. Dynamic imports, re-exports and third-party internals are omitted.
-
-```mermaid
-flowchart LR
-    I0["backtest_trading_session"]
-    I1["backtest_trading_session_builder"]
-    I2["simulated_execution_handler"]
-    I3["position_sizer"]
-    I4["backtest_monitor"]
-    I5["qf_dataframe"]
-    I6["qf_series"]
-    I7["data_provider"]
-    I8["bloomberg_dl_data_provider"]
-    I9["sortino_ratio"]
-    I0 --> I3
-    I0 --> I4
-    I1 --> I0
-    I1 --> I2
-    I1 --> I3
-    I1 --> I4
-    I1 --> I6
-    I1 --> I7
-    I3 --> I7
-    I4 --> I6
-    I5 --> I6
-    I6 --> I5
-    I7 --> I5
-    I7 --> I6
-    I8 --> I5
-    I8 --> I6
-    I9 --> I6
-```
-
-## Design details and extension points
-
-### `BacktestTradingSession`
-
-Source: [src/qf_lib/backtesting/trading_session/backtest_trading_session.py](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py).
-
-Encapsulates the settings and components for carrying out a backtest session. Pulls for data every day.
-
-- `use_data_preloading`: See implementation for the complete contract.
-- `get_preloaded_data_checksum`: Returns the checksum value computed as a hexadecimal digest on the preloaded data bundle.
-- `verify_preloaded_data`: Verifies if the checksum computed on the preloaded data bundle is equal to the expected value. In case of differences ValueError is raised.
-
-### `BacktestTradingSessionBuilder`
-
-Source: [src/qf_lib/backtesting/trading_session/backtest_trading_session_builder.py](../src/qf_lib/backtesting/trading_session/backtest_trading_session_builder.py).
-
-Class used to build a Trading Session with all necessary elements, connections and dependencies.
-By default it uses the following settings:
-
-- `set_backtest_name`: Sets backtest name.
-- `set_frequency`: Sets the frequency of the backtest data and event processing (not the frequency of signal generation)
-- `set_market_open_and_close_time`: Sets the time of market opening and closing for intraday backtests, by providing hour and minute of the market open and market close. This setting will not affect daily backtests and will only be used in case of intraday. Seconds nad microseconds are always disregarded (set to 0 by default).
-- `set_scheduling_time_delay`: Sets the scheduling delay.
-- `set_initial_cash`: Sets the initial cash value.
-
-### `SimulatedExecutionHandler`
-
-Source: [src/qf_lib/backtesting/execution_handler/simulated_execution_handler.py](../src/qf_lib/backtesting/execution_handler/simulated_execution_handler.py).
-
-The simulated execution handler which executes an Order on the open of next bar, unless it is the ExecutionStyle
-is the StopOrder. Then the Order is executed if the Low field for the price is lower then the limit of that Order.
-StopOrders are executed at the MarketClose (if applicable) with the Low price.
-
-- `on_market_close`: See implementation for the complete contract.
-- `on_market_open`: See implementation for the complete contract.
-- `on_new_bar`: See implementation for the complete contract.
-- `on_orders_accept`: See implementation for the complete contract.
-- `assign_order_ids`: Appends Orders to a list of Orders waiting to be carried out.
-
-### `PositionSizer`
-
-Source: [src/qf_lib/backtesting/position_sizer/position_sizer.py](../src/qf_lib/backtesting/position_sizer/position_sizer.py).
-
-Converts :class:`~qf_lib.backtesting.signals.signal.Signal` objects into sized orders.
-
-- `size_signals`: Based on the signals provided, creates a list of Orders where proper sizing has been applied
-
-### `BacktestMonitor`
-
-Source: [src/qf_lib/backtesting/monitoring/backtest_monitor.py](../src/qf_lib/backtesting/monitoring/backtest_monitor.py).
-
-This Monitor will be used to monitor backtest run from the script.
-It will display the portfolio value as the backtest progresses and generate a PDF at the end.
-It is not suitable for the Web application
-
-- `end_of_trading_update`: Saves the results of the backtest
-- `end_of_day_update`: Update real time line chart with current backtest progress every fixed number of days
-- `real_time_update`: This method will not be used by the historical backtest
-- `record_transaction`: Save the transaction in backtest result (and in the file if set to do so)
-
-### `QFDataFrame`
-
-Source: [src/qf_lib/containers/dataframe/qf_dataframe.py](../src/qf_lib/containers/dataframe/qf_dataframe.py).
-
-Base class for all data frames (2-D matrix-like objects) used in the project. All the columns within
-the dataframe contain values for the same date range and have the same frequencies. All the columns are
-of the same types (e.g. log-returns/prices).
-
-- `num_of_columns`: See implementation for the complete contract.
-- `num_of_rows`: See implementation for the complete contract.
-- `to_log_returns`: Converts dataframe to the dataframe of logarithmic returns. First date of prices in the returns dataframe won't be present.
-- `to_simple_returns`: Converts dataframe to the dataframe of simple returns. First date of prices in the returns timeseries won't be present.
-- `to_prices`: Converts a dataframe to the dataframe of prices. The dataframe of prices returned will have an extra date at the beginning (in comparison to the returns' dataframe). The difference between the extra date and the rest of the dates can be inferred from the returns' dataframe or can be calculated using
-
-### `QFSeries`
-
-Source: [src/qf_lib/containers/series/qf_series.py](../src/qf_lib/containers/series/qf_series.py).
-
-Base class for all time-indexed series used in the quant-fin project.
-
-- `to_log_returns`: Converts timeseries to the timeseries of logarithmic returns. First date of prices in the returns timeseries won't be present.
-- `to_simple_returns`: Converts timeseries to the timeseries of simple returns. First date of prices in the returns timeseries won't be present.
-- `to_prices`: Converts a timeseries into series of prices. The timeseries of prices returned will have an extra date at the beginning (in comparison to the returns' timeseries). The difference between the extra date and the rest of the dates can be inferred from the returns' timeseries or can be calculated using
-- `min_max_normalized`: Normalizes the data using min-max scaling: it maps all the data to the [0;1] range, so that 0 corresponds to the minimal value in the original series and 1 corresponds to the maximal value. It is also possible to specify values which should correspond to 0 and 1 after applying the normalization. It
-- `exponential_average`: Calculates the exponential average of a series.
-
-## Repository layout and resources
-
-Installable packages live under `src/`. `pyproject.toml` defines package metadata, build requirements, optional integrations and development dependencies; `uv.lock` records resolved versions, and `.python-version` selects the local interpreter. This layout keeps an accidental checkout import from substituting for the installed wheel. Package resources remain beside their owning modules and are included by the build backend. Existing upstream examples, fixtures, scripts and documentation retain their separate roles.
-
-## Maintenance compatibility and evidence
-
-
-
-## Development and verification workflow
+The steps describe the inspected implementation. User configuration and data inputs are external prerequisites.
 
 ```mermaid
 flowchart TD
-    Checkout["feature/ayu_develop"] --> Lock["uv lock --upgrade"]
-    Lock --> Sync["uv sync --frozen --all-extras --all-groups"]
-    Sync --> Compile["python -m compileall src"]
-    Sync --> Test["Existing complete test suite"]
-    Compile --> Build["uv build wheel and sdist"]
-    Test --> Evidence["Record exact exits and blockers"]
-    Build --> Evidence
-    Evidence --> Review["Review documentation and commit"]
+  W0["Wire provider, broker, monitor, portfolio and notifiers into a backtest session."]
+  W1["Start trading and repeatedly dispatch the next event."]
+  W0 --> W1
+  W2["Route events through registered notifiers until EndTradingEvent."]
+  W1 --> W2
+  W3["Notify the monitor that trading has ended."]
+  W2 --> W3
 ```
 
-See [development commands](development.md) and [validation evidence](validation.md) for interpreter selection, dependency exceptions, full-suite results and remaining blockers. No additional test cases were introduced by this maintenance.
+1. Wire provider, broker, monitor, portfolio and notifiers into a backtest session.. [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44))
+2. Start trading and repeatedly dispatch the next event.. [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57))
+3. Route events through registered notifiers until EndTradingEvent.. [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) / [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88))
+4. Notify the monitor that trading has ended.. [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57))
+
+## Sequence
+
+Representative calls and data dependencies
+
+Messages represent inspected calls or explicitly labelled data dependencies. A data dependency is not an asserted direct runtime call.
+
+```mermaid
+sequenceDiagram
+  participant N0 as TradingSession
+  participant N1 as BacktestTradingSession
+  participant N2 as EventManager
+  participant N3 as BacktestBroker
+  participant N4 as IBBroker
+  participant N5 as MinVariancePortfolio
+  participant N6 as BacktestMonitor
+  N0->>N2: Call dispatch_next_event while continue_trading.
+  N1->>N3: Configured broker dependency. Placement occurs through strategy callbacks, not directly in the dispatch loop.
+  N0->>N6: Call configured monitor.end_of_trading_update after session dispatch finishes.
+```
+
+- Call dispatch_next_event while continue_trading.: [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57))
+- Configured broker dependency. Placement occurs through strategy callbacks, not directly in the dispatch loop.: [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44))
+- Call configured monitor.end_of_trading_update after session dispatch finishes.: [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) / [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104))
+
+## Strengths and limits
+
+### Strengths
+
+- The simulated broker and IB broker are separate concrete boundaries. [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) / [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45)) / [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224))
+
+### Limitations
+
+- A configured broker adapter is not proof of funded or paper-account operation. [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224))
+
+## Validation scope
+
+The linked validation and command records preserve actual historical runs and user-authorized exclusions. This source/document review does not rerun application tests, establish live trading readiness or rank benchmark performance. Current data, credential and runtime prerequisites remain material.
+
+[Repository validation](validation.md) / [Executed checks](maintenance/index.md)
+
+## Source map
+
+| Reviewed symbol/path | Inspected responsibility | Actual file SHA256 |
+|---|---|---|
+| [TradingSession.start_trading](../src/qf_lib/backtesting/trading_session/trading_session.py) ([L57](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/trading_session.py#L57)) | Dispatches events until EventManager ends trading, then calls monitor.end_of_trading_update. | `57ebcf848d0447382f072c5ce38ee898ec71bfcecfcd8d472755fe37b76fff89` |
+| [BacktestTradingSession.__init__](../src/qf_lib/backtesting/trading_session/backtest_trading_session.py) ([L44](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/trading_session/backtest_trading_session.py#L44)) | Calls TradingSession initializer and retains event manager, provider, portfolio, position sizer, filters, monitor, order factory and broker. | `d596358192106326104e12dc02eab0d23844b5dce45db6fc2b441a31d284cb10` |
+| [EventManager.dispatch_next_event](../src/qf_lib/backtesting/events/event_manager.py) ([L68](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L68)) | Gets the next event and dispatches it. | `9f704063428e1398f33e45c91952666a0abaee84d200bc29737cc280ec90c1c3` |
+| [EventManager._dispatch_event](../src/qf_lib/backtesting/events/event_manager.py) ([L88](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/events/event_manager.py#L88)) | Maps time events and end-trading events to registered notifiers and calls notify_all. | `9f704063428e1398f33e45c91952666a0abaee84d200bc29737cc280ec90c1c3` |
+| [BacktestBroker.place_orders](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L41](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L41)) | Delegates order ID assignment to execution_handler. | `3e1f389f59c1e3b85e678f56baaed61bb7ebd22d8f50d595c8559adeecc042e8` |
+| [BacktestBroker.cancel_order](../src/qf_lib/backtesting/broker/backtest_broker.py) ([L45](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/broker/backtest_broker.py#L45)) | Delegates cancellation to execution_handler. | `3e1f389f59c1e3b85e678f56baaed61bb7ebd22d8f50d595c8559adeecc042e8` |
+| [IBBroker._execute_single_order](../src/qf_lib/brokers/ib_broker/ib_broker.py) ([L224](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/brokers/ib_broker/ib_broker.py#L224)) | Converts ticker and Order to IB contract/order, calls client.placeOrder and waits for acknowledgement under a lock. | `6dd385366be5e2e3185b08a5cbc0f0168c23e7344a95396a576cd6d0d3cc2532` |
+| [MinVariancePortfolio.get_weights](../src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py) ([L33](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py#L33)) | Uses a portfolio solver with covariance matrix to obtain minimum-variance weights. | `426eeac41d733246db7099507b3c6211a5284805b3c89dab7b8edf626ece0434` |
+| [BacktestMonitor.end_of_trading_update](../src/qf_lib/backtesting/monitoring/backtest_monitor.py) ([L104](https://github.com/alexcwyu/qf-lib/blob/c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f/src/qf_lib/backtesting/monitoring/backtest_monitor.py#L104)) | Issues configured portfolio analysis, tearsheet, trade analysis, exposure sheets, signal and configuration logs, daily portfolio values and stats, then closes files. | `8b490d69fd65509a45c65351dfeb09bebe764ab09f70f1a42162e7c99d8b5ac8` |
+
+## Documentation provenance
+
+Review date: 2026-10-13. Full committed source HEAD: `c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f`. Template version: 2. 7 source files were independently hashed for this guide.
+
+[Evidence catalog](../../docs/systems-2026-10-13/catalog.json) / [Standard template](../../docs/guidelines/APP_TEMPLATE.md)
+
+- Snapshot provenance: inventory.json full HEAD c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f, branch feature/ayu_develop. Source was inspected in the existing checkout and no repository files were changed.
+- Inspected implementation bodies and existing architecture documentation. This is a representative static source audit, not a runtime or live-service validation. Credential exclusions in current validation are policy, not evidence that a live connection succeeds.
+- Inspected source files: src/qf_lib/backtesting/trading_session/trading_session.py, src/qf_lib/backtesting/trading_session/backtest_trading_session.py, src/qf_lib/backtesting/events/event_manager.py, src/qf_lib/backtesting/broker/backtest_broker.py, src/qf_lib/brokers/ib_broker/ib_broker.py, src/qf_lib/portfolio_construction/portfolio_models/min_variance_portfolio.py
+- Also inspected src/qf_lib/backtesting/monitoring/backtest_monitor.py end_of_trading_update and report helper bodies.

@@ -1,21 +1,12 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Current uv development workflow</title><style>
-:root{color-scheme:light dark;--bg:#f6f8fa;--paper:#fff;--fg:#182332;--muted:#526274;--line:#d9e0e7;--accent:#1769aa}
-@media(prefers-color-scheme:dark){:root{--bg:#111820;--paper:#192330;--fg:#e6edf3;--muted:#a0b3c5;--line:#344354;--accent:#71b7ee}}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.7 system-ui,-apple-system,sans-serif}
-header{border-bottom:1px solid var(--line);padding:16px max(24px,calc((100vw - 1120px)/2));background:var(--paper);font-size:14px}
-main{max-width:1120px;margin:32px auto;padding:40px 48px;background:var(--paper);border:1px solid var(--line);border-radius:12px}
-h1,h2,h3,h4{line-height:1.3;scroll-margin-top:24px}h1{font-size:2.1rem}h2{margin-top:2.5em;border-bottom:1px solid var(--line);padding-bottom:.35em}h3{margin-top:1.8em}
-a{color:var(--accent);text-underline-offset:3px}code{font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;background:var(--bg);border-radius:4px;padding:2px 5px}pre{overflow:auto;border:1px solid var(--line);background:var(--bg);padding:16px;border-radius:7px}pre code{padding:0;background:none}
-table{border-collapse:collapse;width:100%;display:block;overflow-x:auto;font-size:14px}th,td{border:1px solid var(--line);padding:9px 12px;text-align:left}th{background:var(--bg)}blockquote{border-left:4px solid var(--accent);margin:16px 0;padding:4px 20px;color:var(--muted)}
-.diagram{overflow-x:auto;margin:24px 0;padding:20px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#182332}.mermaid{border:0;background:none;text-align:center}.mermaid svg{height:auto;max-width:100%}details{font-size:13px;color:#526274}.headerlink{margin-left:.4em;font-size:.7em;text-decoration:none;color:var(--muted)}
-main{min-width:0;overflow-wrap:anywhere}table,pre{max-width:100%}.diagram svg{display:block}
-th,td{min-width:120px;overflow-wrap:normal}
-@media(max-width:740px){main{margin:0;padding:24px 18px;border:0;border-radius:0}h1{font-size:1.7rem}.diagram{padding:8px}}
-@media print{header,details,.headerlink{display:none}body,main{background:#fff;color:#000;border:0;margin:0;padding:0}a{color:#000}.diagram,pre{break-inside:avoid}}
-</style></head><body><header>Engineering documentation · <a href="development.md">Markdown source</a></header><main><!-- ayu-maintenance-2026-10-12 -->
-<h1 id="current-uv-development-workflow">Current uv development workflow<a class="headerlink" href="#current-uv-development-workflow" title="Permanent link">&para;</a></h1>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Current uv development workflow</title><style>html{color-scheme:light dark}body{margin:0;background:#f5f7fa;color:#172333;font:16px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:28px auto;background:white;padding:40px;border:1px solid #dbe2ea;border-radius:10px}h1,h2,h3{line-height:1.25}h2{margin-top:2em;border-bottom:1px solid #dbe2ea;padding-bottom:.4em}a{color:#1769aa}pre{overflow:auto;padding:16px;background:#f5f7fa;border:1px solid #dbe2ea;border-radius:6px}code{font:14px/1.6 ui-monospace,monospace}table{border-collapse:collapse;display:block;overflow:auto}th,td{border:1px solid #dbe2ea;padding:8px 12px;text-align:left;vertical-align:top}blockquote{margin-left:0;border-left:4px solid #1769aa;padding-left:18px}@media(max-width:700px){main{margin:8px;padding:18px}body{font-size:15px}}@media(prefers-color-scheme:dark){body{background:#111820;color:#e7edf5}main{background:#192330;border-color:#344354}pre{background:#111820}a{color:#78b9ef}th,td,h2,pre{border-color:#344354}}@media print{main{margin:0;border:0;padding:0}a{color:inherit}pre,table{overflow:visible}}.diagram{background:#fff;color:#172333;padding:12px;border:1px solid #dbe2ea;border-radius:6px;overflow:auto}</style></head><body><main><!-- ayu-maintenance-2026-10-12 -->
+
+<!-- current-documentation-provenance -->
+<p>Documentation reviewed: 2026-10-13 · Git source base: <code>c47e1fd85fa2ce1ab50f1a8a82d9ebec7db7f33f</code> · <a href="ayu-develop.md">Current architecture and feature guide</a>.
+Historical execution commands/results below retain their original dates and scope; this metadata update is not a new application test run.</p>
+<!-- /current-documentation-provenance -->
+
+<h1 id="current-uv-development-workflow">Current uv development workflow</h1>
 <p>The maintained branch is <code>feature/ayu_develop</code>. The selected interpreter is Python <code>3.15</code>; <code>requires-python</code> records the range that was actually resolved. Python 3.15 was attempted first. Dependency/native-wheel failures and fallback evidence are recorded in <a href="validation.md">validation.md</a>.</p>
 <pre><code class="language-sh">export UV_PYTHON_PREFERENCE=only-managed
 uv python install 3.15
@@ -29,7 +20,7 @@ DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest
 <p>The <code>src/</code> layout and build-backend package discovery preserve public import names. Wheel/sdist resources include the source-associated data and templates. Optional vendor SDKs, live credentials, databases and graphical/native libraries retain their original runtime requirements. Examples and test fixtures are not promoted into the library API.</p>
 <!-- prior-development-notes -->
 
-<h2 id="compatibility-decisions">Compatibility decisions<a class="headerlink" href="#compatibility-decisions" title="Permanent link">&para;</a></h2>
+<h2 id="compatibility-decisions">Compatibility decisions</h2>
 <ul>
 <li>The complete supplied suite passes on managed Python 3.15.0: 876 passed, 109 preexisting skips (including one collection skip), exit0. Skips retain the upstream checks for unavailable Bloomberg/Quandl/Haver/other licensed services; none are introduced by maintenance.</li>
 <li>Managed Python 3.15.0 resolves and installs the complete extra/dev environment. Native cvxopt builds after installing SuiteSparse; WeasyPrint uses Pango/GLib.</li>
@@ -50,16 +41,16 @@ DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib uv run --no-sync python -m pytest
 </li>
 </ul>
 <p>Native setup on macOS ARM64: <code>brew install pango suite-sparse</code>. Set <code>DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib</code> for WeasyPrint. Run <code>uv sync --frozen --all-extras --all-groups --compile-bytecode</code> before the strict suite to compile the proprietary SDK unmodified.</p>
-<h1 id="qf-lib-development-guide">QF-Lib Development Guide<a class="headerlink" href="#qf-lib-development-guide" title="Permanent link">&para;</a></h1>
-<h2 id="project-setup">Project Setup<a class="headerlink" href="#project-setup" title="Permanent link">&para;</a></h2>
+<h1 id="qf-lib-development-guide">QF-Lib Development Guide</h1>
+<h2 id="project-setup">Project Setup</h2>
 <pre><code class="language-bash">cd qf-lib
 pip install -e .
 # or with all extras
-pip install -e &quot;.[all]&quot;
+pip install -e ".[all]"
 # or with specific extras
-pip install -e &quot;.[detailed_analysis]&quot;  # cvxopt for optimization
+pip install -e ".[detailed_analysis]"  # cvxopt for optimization
 </code></pre>
-<h2 id="dependencies">Dependencies<a class="headerlink" href="#dependencies" title="Permanent link">&para;</a></h2>
+<h2 id="dependencies">Dependencies</h2>
 <p><strong>Core</strong>: numpy, pandas, scipy, scikit-learn, matplotlib
 <strong>Portfolio optimization</strong>: cvxopt (via <code>[detailed_analysis]</code> extra)
 <strong>Data providers</strong> (optional):
@@ -69,7 +60,7 @@ pip install -e &quot;.[detailed_analysis]&quot;  # cvxopt for optimization
 - <code>python-binance</code> - Binance
 - <code>quandl</code> - Quandl/Nasdaq Data Link
 - <code>yfinance</code> - Yahoo Finance</p>
-<h2 id="project-structure">Project Structure<a class="headerlink" href="#project-structure" title="Permanent link">&para;</a></h2>
+<h2 id="project-structure">Project Structure</h2>
 <pre><code>qf-lib/
     src/qf_lib/             # Main package
         analysis/            # Post-backtest analysis
@@ -86,7 +77,7 @@ pip install -e &quot;.[detailed_analysis]&quot;  # cvxopt for optimization
         _version.py          # Version info
     tests/                   # Test suite
 </code></pre>
-<h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
+<h2 id="testing">Testing</h2>
 <pre><code class="language-bash"># Run all tests
 pytest tests/
 
@@ -96,15 +87,15 @@ pytest tests/test_specific.py
 # With coverage
 pytest --cov=qf_lib tests/
 </code></pre>
-<h2 id="code-conventions">Code Conventions<a class="headerlink" href="#code-conventions" title="Permanent link">&para;</a></h2>
-<h3 id="architecture-patterns">Architecture Patterns<a class="headerlink" href="#architecture-patterns" title="Permanent link">&para;</a></h3>
+<h2 id="code-conventions">Code Conventions</h2>
+<h3 id="architecture-patterns">Architecture Patterns</h3>
 <ul>
 <li><strong>Abstract Base Classes</strong>: All major components have abstract base classes (e.g., <code>DataProvider</code>, <code>AlphaModel</code>, <code>TradingSession</code>)</li>
 <li><strong>Builder Pattern</strong>: Complex objects like <code>BacktestTradingSession</code> are constructed via builders</li>
 <li><strong>Observer Pattern</strong>: The event system uses notifiers (publisher-subscriber)</li>
 <li><strong>Dependency Injection</strong>: Components receive dependencies via constructor</li>
 </ul>
-<h3 id="naming">Naming<a class="headerlink" href="#naming" title="Permanent link">&para;</a></h3>
+<h3 id="naming">Naming</h3>
 <ul>
 <li>Classes: <code>PascalCase</code> (e.g., <code>BacktestTradingSession</code>, <code>AlphaModel</code>)</li>
 <li>Methods: <code>snake_case</code> (e.g., <code>get_history</code>, <code>calculate_exposure</code>)</li>
@@ -112,10 +103,10 @@ pytest --cov=qf_lib tests/
 <li>Private: Leading underscore (e.g., <code>_calculate_pnl</code>)</li>
 <li>Type aliases: <code>PascalCase</code> (e.g., <code>QFSeries</code>, <code>QFDataFrame</code>)</li>
 </ul>
-<h3 id="docstrings">Docstrings<a class="headerlink" href="#docstrings" title="Permanent link">&para;</a></h3>
+<h3 id="docstrings">Docstrings</h3>
 <p>NumPy-style docstrings:</p>
 <pre><code class="language-python">def method(self, param1, param2):
-    &quot;&quot;&quot;
+    """
     Brief description.
 
     Parameters
@@ -129,11 +120,11 @@ pytest --cov=qf_lib tests/
     -------
     return_type
         Description of return value
-    &quot;&quot;&quot;
+    """
 </code></pre>
-<h3 id="license-header">License Header<a class="headerlink" href="#license-header" title="Permanent link">&para;</a></h3>
+<h3 id="license-header">License Header</h3>
 <p>All source files include the CERN Apache 2.0 license header.</p>
-<h2 id="adding-a-new-data-provider">Adding a New Data Provider<a class="headerlink" href="#adding-a-new-data-provider" title="Permanent link">&para;</a></h2>
+<h2 id="adding-a-new-data-provider">Adding a New Data Provider</h2>
 <ol>
 <li>Create a new directory under <code>data_providers/</code></li>
 <li>Implement a class extending <code>AbstractPriceDataProvider</code>:</li>
@@ -159,7 +150,7 @@ class MyDataProvider(AbstractPriceDataProvider):
 <li>Create a corresponding ticker type in <code>common/tickers/</code></li>
 <li>Add tests</li>
 </ol>
-<h2 id="adding-a-new-alpha-model">Adding a New Alpha Model<a class="headerlink" href="#adding-a-new-alpha-model" title="Permanent link">&para;</a></h2>
+<h2 id="adding-a-new-alpha-model">Adding a New Alpha Model</h2>
 <ol>
 <li>Subclass <code>AlphaModel</code>:</li>
 </ol>
@@ -185,7 +176,7 @@ class MyAlphaModel(AlphaModel):
    - <code>calculate_fraction_at_risk()</code> using ATR-based risk estimation
    - Signal object creation with metadata</li>
 </ol>
-<h2 id="adding-a-new-analysis-module">Adding a New Analysis Module<a class="headerlink" href="#adding-a-new-analysis-module" title="Permanent link">&para;</a></h2>
+<h2 id="adding-a-new-analysis-module">Adding a New Analysis Module</h2>
 <ol>
 <li>Create module under <code>analysis/</code></li>
 <li>Follow the document-based pattern:</li>
@@ -199,11 +190,11 @@ class MyAnalysisSheet(AbstractDocument):
 
     def build_document(self):
         # Add elements to the document
-        self._add_header(&quot;My Analysis&quot;)
+        self._add_header("My Analysis")
         self._add_chart(self._create_returns_chart())
         self._add_table(self._create_stats_table())
 </code></pre>
-<h2 id="adding-a-portfolio-model">Adding a Portfolio Model<a class="headerlink" href="#adding-a-portfolio-model" title="Permanent link">&para;</a></h2>
+<h2 id="adding-a-portfolio-model">Adding a Portfolio Model</h2>
 <ol>
 <li>Implement under <code>portfolio_construction/portfolio_models/</code>:</li>
 </ol>
@@ -214,33 +205,33 @@ class MyAnalysisSheet(AbstractDocument):
         weights = optimizer.get_optimal_weights(P=cov, q=q)
         return weights
 </code></pre>
-<h2 id="custom-container-types">Custom Container Types<a class="headerlink" href="#custom-container-types" title="Permanent link">&para;</a></h2>
+<h2 id="custom-container-types">Custom Container Types</h2>
 <p>When returning financial data, use QF-Lib's typed containers:</p>
 <pre><code class="language-python">from qf_lib.containers.series.qf_series import QFSeries
 from qf_lib.containers.dataframe.qf_dataframe import QFDataFrame
 
 # These provide domain-specific validation and methods
-series = QFSeries(data, index=dates, name=&quot;returns&quot;)
+series = QFSeries(data, index=dates, name="returns")
 </code></pre>
-<h2 id="settings-configuration">Settings Configuration<a class="headerlink" href="#settings-configuration" title="Permanent link">&para;</a></h2>
+<h2 id="settings-configuration">Settings Configuration</h2>
 <p>Create a <code>Settings</code> object for your environment:</p>
 <pre><code class="language-python">from qf_lib.settings import Settings
 
 settings = Settings(
-    output_directory=&quot;./output&quot;,
-    data_directory=&quot;./data&quot;
+    output_directory="./output",
+    data_directory="./data"
 )
 </code></pre>
 <p>Additional configuration (database connections, API keys) can be set via environment variables or configuration files.</p>
-<h2 id="performance-tips">Performance Tips<a class="headerlink" href="#performance-tips" title="Permanent link">&para;</a></h2>
+<h2 id="performance-tips">Performance Tips</h2>
 <ul>
 <li>Use <code>PrefetchingDataProvider</code> to batch data requests and avoid redundant API calls</li>
 <li>Set appropriate <code>look_ahead_bias=False</code> for backtests (default)</li>
 <li>Use <code>FastAlphaModelTester</code> for quick signal evaluation before full backtests</li>
 <li>The <code>QuadraticOptimizer</code> uses cvxopt with tight tolerances (<code>abstol=1e-15</code>); loosen for faster optimization if appropriate</li>
 </ul>
-<h2 id="configuration-reference">Configuration Reference<a class="headerlink" href="#configuration-reference" title="Permanent link">&para;</a></h2>
-<h3 id="settings-qf_libsettingssettings">Settings (<code>qf_lib.settings.Settings</code>)<a class="headerlink" href="#settings-qf_libsettingssettings" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-reference">Configuration Reference</h2>
+<h3 id="settings-qf_libsettingssettings">Settings (<code>qf_lib.settings.Settings</code>)</h3>
 <p>Settings are loaded from a JSON file (<code>settings_path</code>) with optional secret overlay (<code>secret_path</code> or <code>QUANTFIN_SECRET</code> env var). Keys become nested attributes on the <code>Settings</code> object.</p>
 <table>
 <thead>
@@ -314,7 +305,7 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h3 id="backtesttradingsessionbuilder"><code>BacktestTradingSessionBuilder</code><a class="headerlink" href="#backtesttradingsessionbuilder" title="Permanent link">&para;</a></h3>
+<h3 id="backtesttradingsessionbuilder"><code>BacktestTradingSessionBuilder</code></h3>
 <table>
 <thead>
 <tr>
@@ -384,7 +375,7 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h3 id="presetdataprovider"><code>PresetDataProvider</code><a class="headerlink" href="#presetdataprovider" title="Permanent link">&para;</a></h3>
+<h3 id="presetdataprovider"><code>PresetDataProvider</code></h3>
 <table>
 <thead>
 <tr>
@@ -433,7 +424,7 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h3 id="fixedcommissionmodel"><code>FixedCommissionModel</code><a class="headerlink" href="#fixedcommissionmodel" title="Permanent link">&para;</a></h3>
+<h3 id="fixedcommissionmodel"><code>FixedCommissionModel</code></h3>
 <table>
 <thead>
 <tr>
@@ -452,7 +443,7 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h3 id="pricebasedslippage"><code>PriceBasedSlippage</code><a class="headerlink" href="#pricebasedslippage" title="Permanent link">&para;</a></h3>
+<h3 id="pricebasedslippage"><code>PriceBasedSlippage</code></h3>
 <table>
 <thead>
 <tr>
@@ -477,7 +468,7 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h3 id="frequency-enum-qf_libcommonenumsfrequencyfrequency">Frequency Enum (<code>qf_lib.common.enums.frequency.Frequency</code>)<a class="headerlink" href="#frequency-enum-qf_libcommonenumsfrequencyfrequency" title="Permanent link">&para;</a></h3>
+<h3 id="frequency-enum-qf_libcommonenumsfrequencyfrequency">Frequency Enum (<code>qf_lib.common.enums.frequency.Frequency</code>)</h3>
 <table>
 <thead>
 <tr>
@@ -536,52 +527,52 @@ settings = Settings(
 </tr>
 </tbody>
 </table>
-<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<h3 id="1-valueerror-tickers-are-not-available-in-the-data-bundle">1. <code>ValueError: Tickers: [...] are not available in the Data Bundle</code><a class="headerlink" href="#1-valueerror-tickers-are-not-available-in-the-data-bundle" title="Permanent link">&para;</a></h3>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<h3 id="1-valueerror-tickers-are-not-available-in-the-data-bundle">1. <code>ValueError: Tickers: [...] are not available in the Data Bundle</code></h3>
 <p><strong>Cause</strong>: Requested tickers are not present in the <code>PresetDataProvider</code>'s data array.
 <strong>Solution</strong>: Verify that the tickers passed to <code>get_price()</code> / <code>get_history()</code> match exactly (including type) the tickers used to construct the <code>QFDataArray</code>. Use <code>BloombergTicker("...")</code> or the appropriate ticker class.</p>
-<h3 id="2-valueerror-requested-start-date-is-before-data-bundle-start-date">2. <code>ValueError: Requested start date ... is before data bundle start date</code><a class="headerlink" href="#2-valueerror-requested-start-date-is-before-data-bundle-start-date" title="Permanent link">&para;</a></h3>
+<h3 id="2-valueerror-requested-start-date-is-before-data-bundle-start-date">2. <code>ValueError: Requested start date ... is before data bundle start date</code></h3>
 <p><strong>Cause</strong>: The backtest or query requests data outside the date range of the <code>PresetDataProvider</code>.
 <strong>Solution</strong>: Ensure <code>start_date</code> and <code>end_date</code> in the provider cover the full backtest range plus any warmup periods.</p>
-<h3 id="3-assertionerror-the-passed-data-frequency-should-be-at-most-equal-to-the-frequency-of-the-initially-loaded-data">3. <code>AssertionError: The passed data frequency should be at most equal to the frequency of the initially loaded data</code><a class="headerlink" href="#3-assertionerror-the-passed-data-frequency-should-be-at-most-equal-to-the-frequency-of-the-initially-loaded-data" title="Permanent link">&para;</a></h3>
+<h3 id="3-assertionerror-the-passed-data-frequency-should-be-at-most-equal-to-the-frequency-of-the-initially-loaded-data">3. <code>AssertionError: The passed data frequency should be at most equal to the frequency of the initially loaded data</code></h3>
 <p><strong>Cause</strong>: Requesting higher-frequency data than what was loaded (e.g., requesting minute data from a daily provider).
 <strong>Solution</strong>: Load data at the highest frequency needed. Downsampling (daily from minute) is supported, but upsampling is not.</p>
-<h3 id="4-importerror-no-module-named-blpapi-ibapi">4. <code>ImportError: No module named 'blpapi'</code> / <code>'ibapi'</code><a class="headerlink" href="#4-importerror-no-module-named-blpapi-ibapi" title="Permanent link">&para;</a></h3>
+<h3 id="4-importerror-no-module-named-blpapi-ibapi">4. <code>ImportError: No module named 'blpapi'</code> / <code>'ibapi'</code></h3>
 <p><strong>Cause</strong>: Bloomberg or Interactive Brokers SDK is not installed.
 <strong>Solution</strong>: These are optional dependencies. Install with <code>pip install blpapi</code> (requires Bloomberg C SDK) or <code>pip install ibapi</code>. Use <code>PresetDataProvider</code> or <code>CsvDataProvider</code> if you do not have access to these services.</p>
-<h3 id="5-cvxopt-optimization-fails-with-arithmeticerror">5. <code>cvxopt</code> optimization fails with <code>ArithmeticError</code><a class="headerlink" href="#5-cvxopt-optimization-fails-with-arithmeticerror" title="Permanent link">&para;</a></h3>
+<h3 id="5-cvxopt-optimization-fails-with-arithmeticerror">5. <code>cvxopt</code> optimization fails with <code>ArithmeticError</code></h3>
 <p><strong>Cause</strong>: The covariance matrix is singular or near-singular, causing the quadratic optimizer to fail.
 <strong>Solution</strong>: Use a shrinkage covariance estimator (e.g., <code>ShrinkageEstimator</code>) instead of the sample covariance. Check for assets with zero variance or perfect correlation.</p>
-<h3 id="6-keyerror-pricefieldclose-when-building-qfdataarray">6. <code>KeyError: PriceField.Close</code> when building QFDataArray<a class="headerlink" href="#6-keyerror-pricefieldclose-when-building-qfdataarray" title="Permanent link">&para;</a></h3>
+<h3 id="6-keyerror-pricefieldclose-when-building-qfdataarray">6. <code>KeyError: PriceField.Close</code> when building QFDataArray</h3>
 <p><strong>Cause</strong>: The fields dimension of the data array does not contain the requested <code>PriceField</code>.
 <strong>Solution</strong>: Ensure all required fields (<code>Open</code>, <code>High</code>, <code>Low</code>, <code>Close</code>, <code>Volume</code>) are included when constructing the <code>QFDataArray</code>.</p>
-<h3 id="7-typeerror-__init__-missing-required-positional-argument-pdf_exporter">7. <code>TypeError: __init__() missing required positional argument: 'pdf_exporter'</code><a class="headerlink" href="#7-typeerror-__init__-missing-required-positional-argument-pdf_exporter" title="Permanent link">&para;</a></h3>
+<h3 id="7-typeerror-__init__-missing-required-positional-argument-pdf_exporter">7. <code>TypeError: __init__() missing required positional argument: 'pdf_exporter'</code></h3>
 <p><strong>Cause</strong>: <code>BacktestTradingSessionBuilder</code> requires a <code>Settings</code>, <code>PDFExporter</code>, and <code>ExcelExporter</code>.
 <strong>Solution</strong>: All three are mandatory constructor arguments. For testing without PDF output, create minimal instances: <code>PDFExporter(settings)</code> and <code>ExcelExporter(settings)</code>.</p>
-<h3 id="8-backtest-produces-flat-equity-curve-no-trades">8. Backtest produces flat equity curve (no trades)<a class="headerlink" href="#8-backtest-produces-flat-equity-curve-no-trades" title="Permanent link">&para;</a></h3>
+<h3 id="8-backtest-produces-flat-equity-curve-no-trades">8. Backtest produces flat equity curve (no trades)</h3>
 <p><strong>Cause</strong>: Alpha model always returns <code>Exposure.OUT</code>, or the position sizer blocks all orders.
 <strong>Solution</strong>: Debug the <code>calculate_exposure()</code> method. Log the exposure values at each step. Check that the data provider returns valid prices for the backtest period.</p>
-<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
-<h3 id="api-key-management">API Key Management<a class="headerlink" href="#api-key-management" title="Permanent link">&para;</a></h3>
+<h2 id="security-considerations">Security Considerations</h2>
+<h3 id="api-key-management">API Key Management</h3>
 <ul>
 <li>Bloomberg, Interactive Brokers, Alpaca, and Binance credentials should be stored in the <code>secret_settings.json</code> file or the <code>QUANTFIN_SECRET</code> environment variable -- never in the public <code>settings.json</code>.</li>
 <li>The <code>Settings</code> class merges public and secret configurations, keeping credentials separate from shareable settings.</li>
 </ul>
-<h3 id="credential-storage">Credential Storage<a class="headerlink" href="#credential-storage" title="Permanent link">&para;</a></h3>
+<h3 id="credential-storage">Credential Storage</h3>
 <ul>
 <li><code>secret_settings.json</code> should be excluded from version control (add to <code>.gitignore</code>).</li>
 <li>The <code>QUANTFIN_SECRET</code> environment variable accepts a JSON string, suitable for CI/CD pipelines and container deployments where files are less convenient.</li>
 <li>Database connection strings for data caching should use the secret settings path.</li>
 <li>Avoid logging <code>Settings</code> objects directly, as they may contain credentials as attributes.</li>
 </ul>
-<h3 id="network-security">Network Security<a class="headerlink" href="#network-security" title="Permanent link">&para;</a></h3>
+<h3 id="network-security">Network Security</h3>
 <ul>
 <li>Bloomberg (<code>blpapi</code>) connections use the Bloomberg Terminal's own security. Ensure the terminal is properly authenticated.</li>
 <li>Interactive Brokers connections use the TWS/Gateway API on localhost. Do not expose the TWS API port (default 7497/7496) to the network.</li>
 <li>Alpaca and Binance providers communicate over HTTPS. Verify that <code>base_url</code> settings use <code>https://</code> prefixes.</li>
 <li><code>PresetDataProvider</code> and <code>CsvDataProvider</code> are entirely local and make no network calls.</li>
 </ul>
-<h3 id="safe-practices">Safe Practices<a class="headerlink" href="#safe-practices" title="Permanent link">&para;</a></h3>
+<h3 id="safe-practices">Safe Practices</h3>
 <ul>
 <li>Use <code>look_ahead_bias=False</code> (the default) in all data provider calls during backtesting to prevent future data from leaking into past decisions.</li>
 <li>Set <code>max_volume_share_limit</code> in the slippage model to prevent unrealistic fills in backtests.</li>
@@ -589,15 +580,12 @@ settings = Settings(
 <li>In production, run the backtesting framework under a service account with minimal filesystem and network permissions.</li>
 <li>Regularly audit data provider configurations to ensure no unintended data sources are active.</li>
 </ul>
-<hr />
-<h2 id="see-also">See Also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>
+<hr>
+<h2 id="see-also">See Also</h2>
 <ul>
 <li><a href="README.md">README</a> — Project overview and quick start</li>
 <li><a href="architecture.md">Architecture</a> — System design and components</li>
 <li><a href="workflow.md">Workflow</a> — Event flows and processing pipelines</li>
 <li><a href="state-management.md">State Management</a> — State lifecycle and data models</li>
 </ul></main>
-<script type="module">
-import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@12.1.0/dist/mermaid.esm.min.mjs';
-mermaid.initialize({startOnLoad:true,securityLevel:'strict',theme:'default',flowchart:{useMaxWidth:true},sequence:{useMaxWidth:true}});
-</script></body></html>
+</body></html>
